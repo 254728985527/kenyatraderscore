@@ -49,7 +49,7 @@ const TickPanel = ({ mode, selected, onSelect }: TickPanelProps) => {
     };
 
     return (
-        <article hidden={!selected} className={`tick-panel tick-panel--${mode} ${selected ? 'tick-panel--selected' : ''}`}>
+        <article className={`tick-panel tick-panel--${mode} ${selected ? 'tick-panel--selected' : ''}`}>
             <button className='tick-panel__heading' type='button' onClick={onSelect} aria-pressed={selected}>
                 <span>
                     <strong>{data.title}</strong> <small>({data.target})</small>
@@ -101,23 +101,19 @@ const Hedging = () => {
 
     return (
         <section className='hedging' aria-labelledby='hedging-title'>
-            <header className='hedging__header'>
-                <div><p className='hedging__kicker'>Risk management</p><h1 id='hedging-title'>Hedging strategies</h1><p className='hedging__intro'>Choose a hedge to open its independent trading controls.</p></div>
-                <span className='hedging__badge'>High / Low Tick</span>
-            </header>
-            <nav className='hedging__tabs' aria-label='Hedging strategies'>
-                <button className={`hedging__tab ${activeMode === 'high' ? 'hedging__tab--active' : ''}`} type='button' onClick={() => setActiveMode('high')} aria-selected={activeMode === 'high'} role='tab'>
-                    <span className='hedging__tab-icon' aria-hidden='true'>↗</span> High Tick
-                </button>
-                <button className={`hedging__tab ${activeMode === 'low' ? 'hedging__tab--active' : ''}`} type='button' onClick={() => setActiveMode('low')} aria-selected={activeMode === 'low'} role='tab'>
-                    <span className='hedging__tab-icon' aria-hidden='true'>↘</span> Low Tick
-                </button>
+            <nav className='hedging__tabs' aria-label='Hedging strategies' role='tablist'>
+                <button className='hedging__tab' type='button' role='tab'>Shield&nbsp; Over / Under Hedging</button>
+                <button className='hedging__tab' type='button' role='tab'>↗&nbsp; Only Ups / Downs</button>
+                <button className='hedging__tab hedging__tab--active' type='button' role='tab' aria-selected='true'>ϟ&nbsp; High / Low Tick</button>
             </nav>
+            <div className='hedging__title-row'>
+                <div><p className='hedging__kicker'>Selected strategy</p><h1 id='hedging-title'>High / Low Tick</h1></div>
+                <p className='hedging__intro'>Trade both independent hedge legs from one view.</p>
+            </div>
             <div className='tick-grid' role='tabpanel'>
                 <TickPanel mode='high' selected={activeMode === 'high'} onSelect={() => setActiveMode('high')} />
                 <TickPanel mode='low' selected={activeMode === 'low'} onSelect={() => setActiveMode('low')} />
             </div>
-            <p className='hedging__note'>High Tick and Low Tick keep separate stake, status, and run controls. Switch tabs to trade either hedge independently.</p>
         </section>
     );
 };

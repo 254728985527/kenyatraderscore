@@ -1,19 +1,15 @@
 @use 'components/shared/styles/mixins' as *;
 
-.hedging { min-height: 100%; padding: 2.4rem 3.2rem 3.2rem; background: var(--general-main-1); color: var(--text-general); }
-.hedging__header { display:flex; align-items:flex-start; justify-content:space-between; gap:2rem; max-width:118rem; margin:0 auto 2rem; }
-.hedging__kicker { margin:0 0 .5rem; color:var(--brand-red-coral); font-size:1.1rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
-.hedging h1 { margin:0; font-size:2.5rem; line-height:1.15; }
-.hedging__intro { margin:.6rem 0 0; color:var(--text-less-prominent); font-size:1.4rem; }
-.hedging__badge { flex-shrink:0; padding:.6rem 1rem; border:1px solid var(--general-section-1); border-radius:2rem; color:var(--text-less-prominent); font-size:1.1rem; font-weight:600; }
-.hedging__tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.5rem; max-width:118rem; margin:0 auto 1.2rem; padding:.35rem; border:1px solid #d7e0eb; border-radius:.8rem; background:#f5f7fa; }
-.hedging__tab { display:flex; align-items:center; justify-content:center; gap:.6rem; min-height:3.6rem; border:1px solid transparent; border-radius:.55rem; background:transparent; color:#29415f; font-size:1.3rem; font-weight:700; cursor:pointer; transition:background .2s, color .2s, box-shadow .2s; }
-.hedging__tab:hover { background:#e9eef5; }
-.hedging__tab--active { background:#ff4055; color:#fff; box-shadow:0 .25rem .7rem rgb(255 64 85 / 24%); }
-.hedging__tab--active:hover { background:#ed3047; }
-.hedging__tab-icon { font-size:1.7rem; line-height:1; }
-.tick-grid { display:block; max-width:118rem; margin:0 auto; }
-.tick-panel[hidden] { display:none; }
+.hedging { min-height:100%; padding:1.2rem 1.6rem 2.4rem; background:#f4f7fb; color:#132b4d; }
+.hedging__tabs { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1rem; max-width:132rem; margin:0 auto 2rem; }
+.hedging__tab { min-height:4.2rem; border:1px solid #c7d7ea; border-radius:1rem; background:#fff; color:#173457; font-size:1.55rem; font-weight:700; cursor:pointer; box-shadow:0 .2rem .5rem rgb(27 61 101 / 8%); transition:background .2s, color .2s, transform .2s; }
+.hedging__tab:hover { transform:translateY(-1px); background:#f8fbff; }
+.hedging__tab--active { border-color:#ff3448; background:linear-gradient(100deg,#ff364b,#f31e32); color:#fff; }
+.hedging__title-row { display:flex; align-items:end; justify-content:space-between; max-width:132rem; margin:0 auto 1rem; }
+.hedging__kicker { margin:0 0 .35rem; color:#ef3348; font-size:1rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+.hedging h1 { margin:0; font-size:2.4rem; line-height:1.15; }
+.hedging__intro { margin:0; color:#47617f; font-size:1.3rem; }
+.tick-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1.2rem; max-width:132rem; margin:0 auto; }
 .tick-panel { overflow:hidden; border:1px solid var(--general-section-1); border-radius:.8rem; background:var(--general-section-1); box-shadow:0 .6rem 2rem rgb(0 0 0 / 5%); transition:border-color .2s, box-shadow .2s; }
 .tick-panel--selected { border-color:#377cdb; box-shadow:0 0 0 2px rgb(55 124 219 / 15%); }
 .tick-panel__heading { display:flex; align-items:center; justify-content:space-between; width:100%; padding:1rem 1.2rem; border:0; border-bottom:1px solid var(--general-main-2); background:transparent; color:var(--text-general); text-align:left; cursor:pointer; }
