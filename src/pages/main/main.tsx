@@ -42,6 +42,7 @@ import RunPanel from '../../components/run-panel';
 import ChartModal from '../chart/chart-modal';
 import Dashboard from '../dashboard';
 import RunStrategy from '../dashboard/run-strategy';
+import Hedging from '../hedging/hedging';
 import './main.scss';
 
 const ChartWrapper = lazy(() => import('../chart/chart-wrapper'));
@@ -428,31 +429,47 @@ const AppWrapper = observer(() => {
                                     <ChartWrapper show_digits_stats={false} />
                                 </Suspense>
                             </div>
-                            <div
-                                label={
-                                    <>
-                                        <LegacyGuide1pxIcon
-                                            height='16px'
-                                            width='16px'
-                                            fill='var(--text-general)'
-                                            className='icon-general-fill-g-path'
-                                        />
-                                        <Localize i18n_default_text='Tutorials' />
-                                    </>
-                                }
-                                id='id-tutorials'
-                            >
-                                <div className='tutorials-wrapper'>
-                                    <Suspense
-                                        fallback={
-                                            <ChunkLoader message={localize('Please wait, loading tutorials...')} />
-                                        }
-                                    >
-                                        <Tutorial handleTabChange={handleTabChange} />
-                                    </Suspense>
+                                <div
+                                    label={
+                                        <>
+                                            <LegacyGuide1pxIcon
+                                                height='16px'
+                                                width='16px'
+                                                fill='var(--text-general)'
+                                                className='icon-general-fill-g-path'
+                                            />
+                                            <Localize i18n_default_text='Tutorials' />
+                                        </>
+                                    }
+                                    id='id-tutorials'
+                                >
+                                    <div className='tutorials-wrapper'>
+                                        <Suspense
+                                            fallback={
+                                                <ChunkLoader message={localize('Please wait, loading tutorials...')} />
+                                            }
+                                        >
+                                            <Tutorial handleTabChange={handleTabChange} />
+                                        </Suspense>
+                                    </div>
                                 </div>
-                            </div>
-                        </Tabs>
+                                <div
+                                    label={
+                                        <>
+                                            <LegacyGuide1pxIcon
+                                                height='16px'
+                                                width='16px'
+                                                fill='var(--text-general)'
+                                                className='icon-general-fill-g-path'
+                                            />
+                                            <Localize i18n_default_text='Hedging' />
+                                        </>
+                                    }
+                                    id='id-hedging'
+                                >
+                                    <Hedging />
+                                </div>
+                            </Tabs>
                         {!isDesktop && right_tab_shadow && <span className='tabs-shadow tabs-shadow--right' />}{' '}
                     </div>
                 </div>
