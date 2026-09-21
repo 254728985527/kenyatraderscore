@@ -1,128 +1,38 @@
 @use 'components/shared/styles/mixins' as *;
 
-.hedging {
-    min-height: 100%;
-    padding: 3.2rem 4rem 4rem;
-    background: var(--general-main-1);
-    color: var(--text-general);
+.hedging { min-height: 100%; padding: 2.4rem 3.2rem 3.2rem; background: var(--general-main-1); color: var(--text-general); }
+.hedging__header { display:flex; align-items:flex-start; justify-content:space-between; gap:2rem; max-width:118rem; margin:0 auto 2rem; }
+.hedging__kicker { margin:0 0 .5rem; color:var(--brand-red-coral); font-size:1.1rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+.hedging h1 { margin:0; font-size:2.5rem; line-height:1.15; }
+.hedging__intro { margin:.6rem 0 0; color:var(--text-less-prominent); font-size:1.4rem; }
+.hedging__badge { flex-shrink:0; padding:.6rem 1rem; border:1px solid var(--general-section-1); border-radius:2rem; color:var(--text-less-prominent); font-size:1.1rem; font-weight:600; }
+.tick-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1.4rem; max-width:118rem; margin:0 auto; }
+.tick-panel { overflow:hidden; border:1px solid var(--general-section-1); border-radius:.8rem; background:var(--general-section-1); box-shadow:0 .6rem 2rem rgb(0 0 0 / 5%); transition:border-color .2s, box-shadow .2s; }
+.tick-panel--selected { border-color:#377cdb; box-shadow:0 0 0 2px rgb(55 124 219 / 15%); }
+.tick-panel__heading { display:flex; align-items:center; justify-content:space-between; width:100%; padding:1rem 1.2rem; border:0; border-bottom:1px solid var(--general-main-2); background:transparent; color:var(--text-general); text-align:left; cursor:pointer; }
+.tick-panel__heading strong { font-size:1.4rem; }
+.tick-panel__heading small { color:var(--text-less-prominent); font-size:1rem; }
+.tick-panel__status { padding:.35rem .65rem; border:1px solid #b8d0e9; border-radius:.35rem; color:#356a9e; font-size:.9rem; font-weight:700; }
+.tick-panel__status--running { border-color:#1b9b78; color:#168464; }
+.tick-panel--low .tick-panel__status { border-color:#ff9aa9; color:#de4058; }
+.tick-chart { height:15rem; margin:.8rem; padding:.1rem; border:1px solid #e2e7ee; border-radius:.6rem; background:#fff; }
+.tick-chart svg { display:block; width:100%; height:100%; }
+.tick-panel__controls { padding:1rem 1.2rem 1.1rem; border-top:1px solid var(--general-main-2); }
+.tick-panel__control-row { display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+.tick-panel__label { display:block; font-size:1.3rem; font-weight:700; }
+.tick-panel__hint { display:block; margin-top:.2rem; color:var(--text-less-prominent); font-size:1rem; }
+.toggle { width:3.6rem; height:2rem; padding:.2rem; border:0; border-radius:2rem; background:#b6c0cc; cursor:pointer; }
+.toggle span { display:block; width:1.6rem; height:1.6rem; border-radius:50%; background:#fff; transition:transform .2s; }
+.toggle--on { background:#377cdb; }
+.toggle--on span { transform:translateX(1.6rem); }
+.stake-input { display:flex; align-items:center; gap:.5rem; margin-top:1rem; padding:.6rem .8rem; border:1px solid #cbd5e1; border-radius:.4rem; background:#fff; color:#334155; font-size:1.3rem; }
+.stake-input--disabled { opacity:.55; }
+.stake-input input { width:100%; border:0; outline:0; background:transparent; color:#1e293b; font:inherit; }
+.tick-panel__summary { display:flex; justify-content:space-between; margin:1rem 0; color:var(--text-less-prominent); font-size:1.1rem; }
+.tick-panel__summary strong { color:var(--text-general); }
+.run-button { width:100%; padding:.8rem 1rem; border:0; border-radius:.4rem; background:#377cdb; color:#fff; font-size:1.2rem; font-weight:700; cursor:pointer; }
+.run-button:hover { background:#2869c2; }
+.tick-panel__message { min-height:1.5rem; margin:.7rem 0 0; color:var(--text-less-prominent); font-size:1rem; }
+.hedging__note { max-width:118rem; margin:1.5rem auto 0; color:var(--text-less-prominent); font-size:1.1rem; }
 
-    @include mobile-or-tablet-screen {
-        padding: 2.4rem 1.6rem 3.2rem;
-    }
-
-    &__header {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 2rem;
-        max-width: 112rem;
-        margin: 0 auto 3rem;
-    }
-
-    &__kicker {
-        margin: 0 0 0.6rem;
-        color: var(--brand-red-coral);
-        font-size: 1.2rem;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-    }
-
-    h1 {
-        margin: 0;
-        font-size: 2.8rem;
-        line-height: 1.15;
-    }
-
-    &__intro {
-        max-width: 58rem;
-        margin: 0.8rem 0 0;
-        color: var(--text-less-prominent);
-        font-size: 1.5rem;
-    }
-
-    &__badge {
-        flex-shrink: 0;
-        padding: 0.7rem 1.1rem;
-        border: 1px solid var(--general-section-1);
-        border-radius: 2rem;
-        color: var(--text-less-prominent);
-        font-size: 1.2rem;
-        font-weight: 600;
-    }
-
-    &__grid {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 1.6rem;
-        max-width: 112rem;
-        margin: 0 auto;
-
-        @include mobile-or-tablet-screen {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    &__note {
-        max-width: 112rem;
-        margin: 2.4rem auto 0;
-        color: var(--text-less-prominent);
-        font-size: 1.2rem;
-    }
-}
-
-.hedging-card {
-    min-height: 28rem;
-    padding: 2.4rem;
-    border: 1px solid var(--general-section-1);
-    border-top: 3px solid var(--hedging-accent);
-    border-radius: 1.2rem;
-    background: var(--general-section-1);
-    box-shadow: 0 0.8rem 2.4rem rgb(0 0 0 / 6%);
-
-    &--blue { --hedging-accent: #377cdb; }
-    &--green { --hedging-accent: #18a57a; }
-    &--purple { --hedging-accent: #8764d8; }
-
-    &__topline {
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-        color: var(--text-less-prominent);
-        font-size: 1.2rem;
-        font-weight: 600;
-    }
-
-    &__dot {
-        width: 0.8rem;
-        height: 0.8rem;
-        border-radius: 50%;
-        background: var(--hedging-accent);
-    }
-
-    h2 {
-        margin: 1.6rem 0 0.8rem;
-        font-size: 2rem;
-        line-height: 1.25;
-    }
-
-    &__description {
-        min-height: 6rem;
-        margin: 0;
-        color: var(--text-less-prominent);
-        font-size: 1.4rem;
-        line-height: 1.5;
-    }
-
-    ol {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        margin: 2rem 0 0;
-        padding: 1.6rem 1.6rem 0 3rem;
-        border-top: 1px solid var(--general-main-2);
-        color: var(--text-general);
-        font-size: 1.3rem;
-        line-height: 1.4;
-    }
-}
+@include mobile-or-tablet-screen { .hedging { padding:2rem 1.2rem 3rem; } .hedging__header { margin-bottom:1.4rem; } .hedging h1 { font-size:2rem; } .hedging__badge { display:none; } .tick-grid { grid-template-columns:1fr; } .tick-chart { height:13rem; } }
