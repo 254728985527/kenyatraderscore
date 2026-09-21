@@ -95,7 +95,15 @@ export default defineConfig({
   server: {
     compress: true,
   },
-  dev: { hmr: true },
+  // The preview runtime can request lazy-compilation proxy chunks after a
+  // server restart, which leaves the browser with an HTML fallback instead of
+  // JavaScript and produces "Unexpected token '<'" / ChunkLoadError. Keep
+  // compilation eager in development so every requested chunk exists when the
+  // browser loads it.
+  dev: {
+    hmr: true,
+    lazyCompilation: false,
+  },
   tools: {
     rspack: {
       module: {
