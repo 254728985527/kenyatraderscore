@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { api_base } from '../../external/bot-skeleton/services/api/api-base';
 import './hedging.scss';
 
 type HedgingMode = 'over-under' | 'ups-downs' | 'high-low';
@@ -10,6 +11,7 @@ type VolatilityMarket = {
     price: string;
     change: string;
     tone: 'up' | 'down';
+    symbol?: string;
 };
 
 const volatilityMarkets: VolatilityMarket[] = [
@@ -33,13 +35,45 @@ const marketIconValue = (name: string) => name.match(/\\d+/)?.[0] ?? '100';
 const VolatilitySelector = () => {
     const [open, setOpen] = useState(false);
     const [selected, setSelected] = useState(volatilityMarkets[0]);
+    const [livePrice, setLivePrice] = useState(selected.price);
+    const [liveEpoch, setLiveEpoch] = useState<number | null>(null);
+
+    useEffect(() => {
+        let active = true;
+        let subscriptionId: string | undefined;
+        let unsubscribe: (() => void) | undefined;
+        const connectToTicks = async () => {
+            try {
+                if (!api_base.api) await api_base.init();
+                const activeSymbols = api_base.active_symbols?.length ? api_base.active_symbols : await api_base.getActiveSymbols();
+                const match = activeSymbols?.find((item: any) => item.symbol === selected.symbol || item.display_name === selected.name || item.name === selected.name);
+                const symbol = match?.symbol || selected.symbol || 'R_100';
+                const response = await api_base.api?.send({ ticks: symbol, subscribe: 1 });
+                subscriptionId = response?.subscription?.id;
+                unsubscribe = api_base.api?.onMessage().subscribe((message: any) => {
+                    const tick = message?.tick;
+                    if (!active || !tick || tick.symbol !== symbol) return;
+                    setLivePrice(Number(tick.quote).toFixed(2));
+                    setLiveEpoch(Number(tick.epoch));
+                }).unsubscribe;
+            } catch (error) {
+                console.warn('[Hedging] Live tick connection unavailable:', error);
+            }
+        };
+        connectToTicks();
+        return () => {
+            active = false;
+            unsubscribe?.();
+            if (subscriptionId) api_base.api?.send({ forget: subscriptionId });
+        };
+    }, [selected]);
 
     return (
         <div className={`volatility-selector ${open ? 'volatility-selector--open' : ''}`}>
             <button className='volatility-selector__trigger' type='button' onClick={() => setOpen(!open)} aria-expanded={open}>
                 <span className='volatility-selector__icon'><b>{marketIconValue(selected.name)}</b><i>{selected.name.includes('(1s)') ? '1s' : '•'}</i><span>▥<br />▥</span></span>
-                <span className='volatility-selector__copy'><strong>{selected.name}</strong><small>{selected.price} <em className={`volatility-selector__change volatility-selector__change--${selected.tone}`}>{selected.change} {selected.tone === 'down' ? '▼' : '▲'}</em></small></span>
-                <span className='volatility-selector__chevron'>{open ? '⌃' : '⌄'}</span>
+                <span className='volatility-selector__copy'><strong>{selected.name}</strong><small>{livePrice} <em className={`volatility-selector__change volatility-selector__change--${selected.tone}`}>{selected.change} {selected.tone === 'down' ? '▼' : '▲'}</em></small></span>
+                <span className='volatility-selector__live'>{liveEpoch ? 'LIVE' : 'CONNECTING'}</span><span className='volatility-selector__chevron'>{open ? '⌃' : '⌄'}</span>
             </button>
             {open && <div className='volatility-selector__menu' role='listbox' aria-label='Live volatility markets'>{volatilityCategories.map(category => <div className='volatility-selector__group' key={category}><h3>{category}</h3>{volatilityMarkets.filter(market => market.category === category).map(market => <button key={market.name} type='button' role='option' aria-selected={selected.name === market.name} onClick={() => { setSelected(market); setOpen(false); }}><span><strong>{market.name}</strong><small>{market.price}</small></span><em className={`volatility-selector__change--${market.tone}`}>{market.change} {market.tone === 'down' ? '▼' : '▲'}</em></button>)}</div>)}</div>}
         </div>
