@@ -4,6 +4,36 @@ import './hedging.scss';
 type HedgingMode = 'over-under' | 'ups-downs' | 'high-low';
 type TickMode = 'high' | 'low';
 
+type VolatilityMarket = {
+    name: string;
+    price: string;
+    change: string;
+    tone: 'up' | 'down';
+};
+
+const volatilityMarkets: VolatilityMarket[] = [
+    { name: 'Volatility 100 (1s) Index', price: '938.04', change: '- 0.17 (0.02%)', tone: 'down' },
+    { name: 'Volatility 75 (1s) Index', price: '895874.65', change: '+ 12.40 (0.14%)', tone: 'up' },
+    { name: 'Volatility 50 (1s) Index', price: '1042.18', change: '+ 2.08 (0.20%)', tone: 'up' },
+    { name: 'Volatility 25 (1s) Index', price: '896921.38', change: '- 4.12 (0.05%)', tone: 'down' },
+];
+
+const VolatilitySelector = () => {
+    const [open, setOpen] = useState(false);
+    const [selected, setSelected] = useState(volatilityMarkets[0]);
+
+    return (
+        <div className={`volatility-selector ${open ? 'volatility-selector--open' : ''}`}>
+            <button className='volatility-selector__trigger' type='button' onClick={() => setOpen(!open)} aria-expanded={open}>
+                <span className='volatility-selector__icon'><b>{selected.name.match(/\\d+/)?.[0]}</b><i>1s</i><span>▥<br />▥</span></span>
+                <span className='volatility-selector__copy'><strong>{selected.name}</strong><small>{selected.price} <em className={`volatility-selector__change volatility-selector__change--${selected.tone}`}>{selected.change} {selected.tone === 'down' ? '▼' : '▲'}</em></small></span>
+                <span className='volatility-selector__chevron'>{open ? '⌃' : '⌄'}</span>
+            </button>
+            {open && <div className='volatility-selector__menu' role='listbox' aria-label='Volatility markets'>{volatilityMarkets.map(market => <button key={market.name} type='button' role='option' aria-selected={selected.name === market.name} onClick={() => { setSelected(market); setOpen(false); }}><strong>{market.name}</strong><small>{market.price} <em className={`volatility-selector__change--${market.tone}`}>{market.change}</em></small></button>)}</div>}
+        </div>
+    );
+};
+
 type TickPanelProps = {
     mode: TickMode;
     selected: boolean;
@@ -99,6 +129,7 @@ const TickPanel = ({ mode, selected, onSelect }: TickPanelProps) => {
 
 const UpsDowns = () => (
     <div className='ups-downs' role='tabpanel' aria-label='Only ups and downs trading'>
+        <VolatilitySelector />
         <div className='ups-downs__cards'>
             {[
                 { type: 'ups', title: 'ONLY UPS', subtitle: 'Continuous Rise (Tick N+1 > Tick N)', color: 'green', points: '54,108 180,76 310,42 430,20' },
@@ -177,7 +208,7 @@ const Hedging = () => {
                 <button className={`hedging__tab ${activeMode === 'ups-downs' ? 'hedging__tab--active' : ''}`} type='button' role='tab' aria-selected={activeMode === 'ups-downs'} onClick={() => selectMode('ups-downs')}>↗&nbsp; Only Ups / Downs</button>
                 <button className={`hedging__tab ${activeMode === 'high-low' ? 'hedging__tab--active' : ''}`} type='button' role='tab' aria-selected={activeMode === 'high-low'} onClick={() => selectMode('high-low')}>ϟ&nbsp; High / Low Tick</button>
             </nav>
-            {activeMode === 'ups-downs' ? <UpsDowns /> : activeMode === 'over-under' ? <OverUnder /> : <><div className='hedging__title-row'><div><p className='hedging__kicker'>Selected strategy</p><h1 id='hedging-title'>High / Low Tick</h1></div><p className='hedging__intro'>Trade both independent hedge legs from one view.</p></div><div className='tick-grid' role='tabpanel'><TickPanel mode='high' selected={activeMode === 'high-low'} onSelect={() => selectMode('high-low')} /><TickPanel mode='low' selected={activeMode === 'high-low'} onSelect={() => selectMode('high-low')} /></div></>}
+            {activeMode === 'ups-downs' ? <UpsDowns /> : activeMode === 'over-under' ? <OverUnder /> : <><VolatilitySelector /><div className='hedging__title-row'><div><p className='hedging__kicker'>Selected strategy</p><h1 id='hedging-title'>High / Low Tick</h1></div><p className='hedging__intro'>Trade both independent hedge legs from one view.</p></div><div className='tick-grid' role='tabpanel'><TickPanel mode='high' selected={activeMode === 'high-low'} onSelect={() => selectMode('high-low')} /><TickPanel mode='low' selected={activeMode === 'high-low'} onSelect={() => selectMode('high-low')} /></div></>}
         </section>
     );
 };
