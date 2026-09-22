@@ -6,17 +6,29 @@ type TickMode = 'high' | 'low';
 
 type VolatilityMarket = {
     name: string;
+    category: string;
     price: string;
     change: string;
     tone: 'up' | 'down';
 };
 
 const volatilityMarkets: VolatilityMarket[] = [
-    { name: 'Volatility 100 (1s) Index', price: '938.04', change: '- 0.17 (0.02%)', tone: 'down' },
-    { name: 'Volatility 75 (1s) Index', price: '895874.65', change: '+ 12.40 (0.14%)', tone: 'up' },
-    { name: 'Volatility 50 (1s) Index', price: '1042.18', change: '+ 2.08 (0.20%)', tone: 'up' },
-    { name: 'Volatility 25 (1s) Index', price: '896921.38', change: '- 4.12 (0.05%)', tone: 'down' },
+    { name: 'Volatility 100 (1s) Index', category: 'Continuous Indices', price: '938.04', change: '- 0.17 (0.02%)', tone: 'down' },
+    { name: 'Volatility 75 (1s) Index', category: 'Continuous Indices', price: '895874.65', change: '+ 12.40 (0.14%)', tone: 'up' },
+    { name: 'Volatility 50 (1s) Index', category: 'Continuous Indices', price: '1042.18', change: '+ 2.08 (0.20%)', tone: 'up' },
+    { name: 'Volatility 25 (1s) Index', category: 'Continuous Indices', price: '896921.38', change: '- 4.12 (0.05%)', tone: 'down' },
+    { name: 'Volatility 10 (1s) Index', category: 'Continuous Indices', price: '742.31', change: '+ 1.42 (0.19%)', tone: 'up' },
+    { name: 'Bull Market Index', category: 'Daily Reset Indices', price: '1842.61', change: '+ 8.21 (0.45%)', tone: 'up' },
+    { name: 'Bear Market Index', category: 'Daily Reset Indices', price: '612.48', change: '- 3.09 (0.50%)', tone: 'down' },
+    { name: 'Jump 100 Index', category: 'Jump Indices', price: '1284.72', change: '+ 6.37 (0.50%)', tone: 'up' },
+    { name: 'Jump 75 Index', category: 'Jump Indices', price: '973.18', change: '- 2.44 (0.25%)', tone: 'down' },
+    { name: 'Crash 500 Index', category: 'Crash / Boom Indices', price: '524.88', change: '- 7.15 (1.35%)', tone: 'down' },
+    { name: 'Boom 500 Index', category: 'Crash / Boom Indices', price: '781.36', change: '+ 9.64 (1.25%)', tone: 'up' },
 ];
+
+const volatilityCategories = [...new Set(volatilityMarkets.map(market => market.category))];
+
+const marketIconValue = (name: string) => name.match(/\\d+/)?.[0] ?? '100';
 
 const VolatilitySelector = () => {
     const [open, setOpen] = useState(false);
@@ -25,11 +37,11 @@ const VolatilitySelector = () => {
     return (
         <div className={`volatility-selector ${open ? 'volatility-selector--open' : ''}`}>
             <button className='volatility-selector__trigger' type='button' onClick={() => setOpen(!open)} aria-expanded={open}>
-                <span className='volatility-selector__icon'><b>{selected.name.match(/\\d+/)?.[0]}</b><i>1s</i><span>▥<br />▥</span></span>
+                <span className='volatility-selector__icon'><b>{marketIconValue(selected.name)}</b><i>{selected.name.includes('(1s)') ? '1s' : '•'}</i><span>▥<br />▥</span></span>
                 <span className='volatility-selector__copy'><strong>{selected.name}</strong><small>{selected.price} <em className={`volatility-selector__change volatility-selector__change--${selected.tone}`}>{selected.change} {selected.tone === 'down' ? '▼' : '▲'}</em></small></span>
                 <span className='volatility-selector__chevron'>{open ? '⌃' : '⌄'}</span>
             </button>
-            {open && <div className='volatility-selector__menu' role='listbox' aria-label='Volatility markets'>{volatilityMarkets.map(market => <button key={market.name} type='button' role='option' aria-selected={selected.name === market.name} onClick={() => { setSelected(market); setOpen(false); }}><strong>{market.name}</strong><small>{market.price} <em className={`volatility-selector__change--${market.tone}`}>{market.change}</em></small></button>)}</div>}
+            {open && <div className='volatility-selector__menu' role='listbox' aria-label='Live volatility markets'>{volatilityCategories.map(category => <div className='volatility-selector__group' key={category}><h3>{category}</h3>{volatilityMarkets.filter(market => market.category === category).map(market => <button key={market.name} type='button' role='option' aria-selected={selected.name === market.name} onClick={() => { setSelected(market); setOpen(false); }}><span><strong>{market.name}</strong><small>{market.price}</small></span><em className={`volatility-selector__change--${market.tone}`}>{market.change} {market.tone === 'down' ? '▼' : '▲'}</em></button>)}</div>)}</div>}
         </div>
     );
 };
