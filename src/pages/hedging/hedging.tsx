@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import './hedging.scss';
 
+type HedgingMode = 'over-under' | 'ups-downs' | 'high-low';
 type TickMode = 'high' | 'low';
 
 type TickPanelProps = {
@@ -96,24 +97,44 @@ const TickPanel = ({ mode, selected, onSelect }: TickPanelProps) => {
     );
 };
 
-const Hedging = () => {
-    const [activeMode, setActiveMode] = useState<TickMode>('high');
+const UpsDowns = () => (
+    <div className='ups-downs' role='tabpanel' aria-label='Only ups and downs trading'>
+        <div className='ups-downs__cards'>
+            {[
+                { type: 'ups', title: 'ONLY UPS', subtitle: 'Continuous Rise (Tick N+1 > Tick N)', color: 'green', points: '54,108 180,76 310,42 430,20' },
+                { type: 'downs', title: 'ONLY DOWNS', subtitle: 'Continuous Fall (Tick N+1 < Tick N)', color: 'blue', points: '54,32 180,62 310,88 430,116' },
+            ].map(card => (
+                <article className={`direction-card direction-card--${card.color}`} key={card.type}>
+                    <header className='direction-card__header'>
+                        <div className='direction-card__identity'><span className='direction-card__icon'>{card.type === 'ups' ? '↗' : '↘'}</span><div><h2>{card.title}</h2><p>{card.subtitle}</p></div></div>
+                        <div className='direction-card__meta'><span>RUN {card.type === 'ups' ? 'HIGH' : 'LOW'}</span><b>Ready</b><strong>Active</strong></div>
+                    </header>
+                    <div className='direction-card__chart' role='img' aria-label={`${card.title} trend chart`}>
+                        <span className='direction-card__badge'>✓ {card.type === 'ups' ? 'Continuous Rise' : 'Continuous Fall'} (0/2 Ticks)</span>
+                        <svg viewBox='0 0 480 140' preserveAspectRatio='none' aria-hidden='true'><defs><pattern id={`ups-grid-${card.type}`} width='28' height='22' patternUnits='userSpaceOnUse'><path d='M 28 0 L 0 0 0 22' fill='none' stroke='#dce7f4' /></pattern></defs><rect width='480' height='140' fill={`url(#ups-grid-${card.type})`} /><polyline points={card.points} fill='none' stroke='currentColor' strokeWidth='4' /><circle cx='54' cy={card.type === 'ups' ? 108 : 32} r='6' fill='currentColor' /><circle cx='310' cy={card.type === 'ups' ? 42 : 88} r='5' fill='white' stroke='currentColor' strokeWidth='3' /><circle cx='430' cy={card.type === 'ups' ? 20 : 116} r='6' fill='#536b85' /></svg>
+                        <span className='direction-card__start'>Start: 896921.38</span><span className='direction-card__end'>End</span>
+                    </div>
+                    <div className='direction-card__stats'><span>ENTRY SPOT<strong>--</strong></span><span>CONSECUTIVE<strong>0 / 2 Ticks</strong></span><span>REAL PAYOUT<strong>$3.82 <small>(+282%)</small></strong></span><span>Current Stake:<strong>$0.35</strong></span></div>
+                    <button className='direction-card__buy' type='button'>▶&nbsp; BUY ONLY {card.type.toUpperCase()} <small>|&nbsp; Payout: $3.82 USD (+282%)</small></button>
+                </article>
+            ))}
+        </div>
+        <div className='ups-downs__entry'><span>ENTRY PRICE:</span><strong>895874.65</strong><span>Market: Volatility 25 (1s) Index&nbsp; • &nbsp;Ticks sampled: 60</span></div>
+        <div className='ups-downs__probabilities'><div><b>↗ UP</b><span>Probability <strong>36%</strong></span></div><div><b>↘ DOWN</b><span>Probability <strong>64%</strong></span></div></div>
+    </div>
+);
 
+const Hedging = () => {
+    const [activeMode, setActiveMode] = useState<HedgingMode>('high-low');
+    const selectMode = (mode: HedgingMode) => setActiveMode(mode);
     return (
         <section className='hedging' aria-labelledby='hedging-title'>
             <nav className='hedging__tabs' aria-label='Hedging strategies' role='tablist'>
-                <button className='hedging__tab' type='button' role='tab'>Shield&nbsp; Over / Under Hedging</button>
-                <button className='hedging__tab' type='button' role='tab'>↗&nbsp; Only Ups / Downs</button>
-                <button className='hedging__tab hedging__tab--active' type='button' role='tab' aria-selected='true'>ϟ&nbsp; High / Low Tick</button>
+                <button className={`hedging__tab ${activeMode === 'over-under' ? 'hedging__tab--active' : ''}`} type='button' role='tab' aria-selected={activeMode === 'over-under'} onClick={() => selectMode('over-under')}>Shield&nbsp; Over / Under Hedging</button>
+                <button className={`hedging__tab ${activeMode === 'ups-downs' ? 'hedging__tab--active' : ''}`} type='button' role='tab' aria-selected={activeMode === 'ups-downs'} onClick={() => selectMode('ups-downs')}>↗&nbsp; Only Ups / Downs</button>
+                <button className={`hedging__tab ${activeMode === 'high-low' ? 'hedging__tab--active' : ''}`} type='button' role='tab' aria-selected={activeMode === 'high-low'} onClick={() => selectMode('high-low')}>ϟ&nbsp; High / Low Tick</button>
             </nav>
-            <div className='hedging__title-row'>
-                <div><p className='hedging__kicker'>Selected strategy</p><h1 id='hedging-title'>High / Low Tick</h1></div>
-                <p className='hedging__intro'>Trade both independent hedge legs from one view.</p>
-            </div>
-            <div className='tick-grid' role='tabpanel'>
-                <TickPanel mode='high' selected={activeMode === 'high'} onSelect={() => setActiveMode('high')} />
-                <TickPanel mode='low' selected={activeMode === 'low'} onSelect={() => setActiveMode('low')} />
-            </div>
+            {activeMode === 'ups-downs' ? <UpsDowns /> : <><div className='hedging__title-row'><div><p className='hedging__kicker'>Selected strategy</p><h1 id='hedging-title'>{activeMode === 'high-low' ? 'High / Low Tick' : 'Over / Under Hedging'}</h1></div><p className='hedging__intro'>Trade both independent hedge legs from one view.</p></div><div className='tick-grid' role='tabpanel'><TickPanel mode='high' selected={activeMode === 'high-low'} onSelect={() => selectMode('high-low')} /><TickPanel mode='low' selected={activeMode === 'high-low'} onSelect={() => selectMode('high-low')} /></div></>}
         </section>
     );
 };
