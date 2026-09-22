@@ -124,6 +124,38 @@ const UpsDowns = () => (
     </div>
 );
 
+const OverUnder = () => {
+    const [target, setTarget] = useState(4);
+    const [threshold, setThreshold] = useState(15);
+    const [scope, setScope] = useState('all');
+    const [overStake, setOverStake] = useState('0.35');
+    const [underStake, setUnderStake] = useState('0.35');
+    const [running, setRunning] = useState(false);
+
+    return (
+        <div className='shield-hedging' role='tabpanel' aria-label='Shield over and under hedging'>
+            <div className='shield-section shield-section--targets'>
+                <div className='shield-section__heading'><span>◉</span><strong>TARGET DIGIT SELECTION (0 - 9):</strong><b>Active: Target D{target} (8.0%) <em>— Filters ≥{threshold}% Markets (2 Qualified)</em></b></div>
+                <div className='digit-grid'>{Array.from({ length: 10 }, (_, digit) => <button key={digit} type='button' className={`digit-card ${target === digit ? 'digit-card--active' : ''}`} onClick={() => setTarget(digit)}><strong>{digit}</strong><span>{digit === 4 ? '8.0%' : digit === 6 ? '15.0%' : digit === 9 ? '5.0%' : digit % 3 === 0 ? '9.0%' : '11.0%'}</span>{target === digit && <small>TARGET</small>}</button>)}</div>
+            </div>
+            <div className='shield-section'>
+                <div className='shield-section__heading'><span>◉</span><strong>CONTINUOUS TRADING POOL: <em>All Active Synthetics (2 Rotating)</em></strong><b>1 Trade / Market Continuous</b></div>
+                <div className='threshold-row'><strong>SELECT QUALIFYING THRESHOLD ON TARGET D{target}:</strong>{[10, 12, 14, 15, 16].map(value => <button key={value} type='button' className={threshold === value ? 'threshold-card--active' : ''} onClick={() => setThreshold(value)}><b>{value}%</b><span>{value === 15 ? '2 Mkts' : value === 16 ? '1 Mkt' : `${22 - value} Markets`}</span></button>)}</div>
+            </div>
+            <div className='shield-section'>
+                <div className='shield-section__heading'><span>◉</span><strong>POOL TRADING SCOPE:</strong><b>Sequential 1-Trade Continuous Rotation</b></div>
+                <div className='scope-row'>{[['all', 'All (≥15%)', '2 Active'], ['one', '1 Market', 'Top 1'], ['two', '2 Markets', 'Top 2'], ['three', '3 Markets', 'Top 3'], ['four', '4 Markets', 'Top 4']].map(([value, label, note]) => <button key={value} type='button' className={scope === value ? 'scope-card--active' : ''} onClick={() => setScope(value)}><strong>{label}</strong><span>{note}</span></button>)}</div>
+            </div>
+            <div className='trade-controls'>
+                <div className='trade-leg trade-leg--over'><label>↕ <span>Trade Type</span><select defaultValue='Over'><option>Over</option><option>Under</option></select></label><label>◉ <span>Stake</span><input type='number' min='0.01' step='0.01' value={overStake} onChange={event => setOverStake(event.target.value)} /></label></div>
+                <label className='martingale'>▥ <span>Martingale</span><input type='number' min='1' step='0.01' defaultValue='1.23' /></label>
+                <div className='trade-leg trade-leg--under'><label>↻ <span>Trade Type</span><select defaultValue='Under'><option>Under</option><option>Over</option></select></label><label>◉ <span>Stake</span><input type='number' min='0.01' step='0.01' value={underStake} onChange={event => setUnderStake(event.target.value)} /></label></div>
+            </div>
+            <button className={`shield-run ${running ? 'shield-run--running' : ''}`} type='button' onClick={() => setRunning(true)}>{running ? 'HEDGING ACTIVE' : 'RUN SHIELD OVER / UNDER HEDGING'}</button>
+        </div>
+    );
+};
+
 const Hedging = () => {
     const [activeMode, setActiveMode] = useState<HedgingMode>('high-low');
     const selectMode = (mode: HedgingMode) => setActiveMode(mode);
@@ -134,7 +166,7 @@ const Hedging = () => {
                 <button className={`hedging__tab ${activeMode === 'ups-downs' ? 'hedging__tab--active' : ''}`} type='button' role='tab' aria-selected={activeMode === 'ups-downs'} onClick={() => selectMode('ups-downs')}>↗&nbsp; Only Ups / Downs</button>
                 <button className={`hedging__tab ${activeMode === 'high-low' ? 'hedging__tab--active' : ''}`} type='button' role='tab' aria-selected={activeMode === 'high-low'} onClick={() => selectMode('high-low')}>ϟ&nbsp; High / Low Tick</button>
             </nav>
-            {activeMode === 'ups-downs' ? <UpsDowns /> : <><div className='hedging__title-row'><div><p className='hedging__kicker'>Selected strategy</p><h1 id='hedging-title'>{activeMode === 'high-low' ? 'High / Low Tick' : 'Over / Under Hedging'}</h1></div><p className='hedging__intro'>Trade both independent hedge legs from one view.</p></div><div className='tick-grid' role='tabpanel'><TickPanel mode='high' selected={activeMode === 'high-low'} onSelect={() => selectMode('high-low')} /><TickPanel mode='low' selected={activeMode === 'high-low'} onSelect={() => selectMode('high-low')} /></div></>}
+            {activeMode === 'ups-downs' ? <UpsDowns /> : activeMode === 'over-under' ? <OverUnder /> : <><div className='hedging__title-row'><div><p className='hedging__kicker'>Selected strategy</p><h1 id='hedging-title'>High / Low Tick</h1></div><p className='hedging__intro'>Trade both independent hedge legs from one view.</p></div><div className='tick-grid' role='tabpanel'><TickPanel mode='high' selected={activeMode === 'high-low'} onSelect={() => selectMode('high-low')} /><TickPanel mode='low' selected={activeMode === 'high-low'} onSelect={() => selectMode('high-low')} /></div></>}
         </section>
     );
 };
