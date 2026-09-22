@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { api_base } from '../../external/bot-skeleton/services/api/api-base';
 import './hedging.scss';
 
 type HedgingMode = 'over-under' | 'ups-downs' | 'high-low';
@@ -40,31 +39,33 @@ const VolatilitySelector = () => {
 
     useEffect(() => {
         let active = true;
-        let subscriptionId: string | undefined;
-        let unsubscribe: (() => void) | undefined;
-        const connectToTicks = async () => {
-            try {
-                if (!api_base.api) await api_base.init();
-                const activeSymbols = api_base.active_symbols?.length ? api_base.active_symbols : await api_base.getActiveSymbols();
-                const match = activeSymbols?.find((item: any) => item.symbol === selected.symbol || item.display_name === selected.name || item.name === selected.name);
-                const symbol = match?.symbol || selected.symbol || 'R_100';
-                const response = await api_base.api?.send({ ticks: symbol, subscribe: 1 });
-                subscriptionId = response?.subscription?.id;
-                unsubscribe = api_base.api?.onMessage().subscribe((message: any) => {
+        let socket: WebSocket | undefined;
+        const symbol = selected.symbol || 'R_100';
+        const connectToTicks = () => {
+            socket = new WebSocket('wss://api.derivws.com/trading/v1/option/ws/public');
+            socket.addEventListener('open', () => {
+                if (active) socket?.send(JSON.stringify({ ticks: symbol, subscribe: 1 }));
+            });
+            socket.addEventListener('message', event => {
+                try {
+                    const message = JSON.parse(event.data);
                     const tick = message?.tick;
                     if (!active || !tick || tick.symbol !== symbol) return;
                     setLivePrice(Number(tick.quote).toFixed(2));
                     setLiveEpoch(Number(tick.epoch));
-                }).unsubscribe;
-            } catch (error) {
-                console.warn('[Hedging] Live tick connection unavailable:', error);
-            }
+                } catch {
+                    // Ignore malformed provider messages.
+                }
+            });
+            socket.addEventListener('error', () => {
+                if (active) setLiveEpoch(null);
+            });
         };
         connectToTicks();
         return () => {
             active = false;
-            unsubscribe?.();
-            if (subscriptionId) api_base.api?.send({ forget: subscriptionId });
+            if (socket?.readyState === WebSocket.OPEN) socket.send(JSON.stringify({ forget_all: 'ticks' }));
+            socket?.close();
         };
     }, [selected]);
 
