@@ -134,8 +134,19 @@ const OverUnder = () => {
 
     return (
         <div className='shield-hedging' role='tabpanel' aria-label='Shield over and under hedging'>
+            <div className='shield-market-header'>
+                <div className='shield-target-strip'>
+                    <span className='shield-target-strip__icon'>◉</span>
+                    <strong>TARGET DIGIT SELECTION (0 - 9):</strong>
+                </div>
+                <button className='shield-market-card' type='button' aria-label='Select market'>
+                    <span className='shield-market-card__icon'><b>100</b><i>1s</i><span>▥<br />▥</span></span>
+                    <span className='shield-market-card__copy'><strong>Volatility 100 (1s) Index</strong><small>938.04 - 0.17 (0.02%) <em>▼</em></small></span>
+                    <span className='shield-market-card__chevron'>⌄</span>
+                </button>
+            </div>
             <div className='shield-section shield-section--targets'>
-                <div className='shield-section__heading'><span>◉</span><strong>TARGET DIGIT SELECTION (0 - 9):</strong><b>Active: Target D{target} (8.0%) <em>— Filters ≥{threshold}% Markets (2 Qualified)</em></b></div>
+                <div className='shield-section__heading'><span>◉</span><strong>SELECT TARGET DIGIT:</strong><b>Active: Target D{target} (8.0%) <em>— Filters ≥{threshold}% Markets (2 Qualified)</em></b></div>
                 <div className='digit-grid'>{Array.from({ length: 10 }, (_, digit) => <button key={digit} type='button' className={`digit-card ${target === digit ? 'digit-card--active' : ''}`} onClick={() => setTarget(digit)}><strong>{digit}</strong><span>{digit === 4 ? '8.0%' : digit === 6 ? '15.0%' : digit === 9 ? '5.0%' : digit % 3 === 0 ? '9.0%' : '11.0%'}</span>{target === digit && <small>TARGET</small>}</button>)}</div>
             </div>
             <div className='shield-section'>
