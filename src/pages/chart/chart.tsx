@@ -1,4 +1,48 @@
 import { useEffect, useState } from 'react';
+
+const FloatingDigitTracker = ({ symbol, subscribeQuotes }: { symbol: string; subscribeQuotes: any }) => {
+    const [counts, setCounts] = useState<number[]>(Array(10).fill(0));
+    const [tickLimit, setTickLimit] = useState(100);
+    const [lastDigit, setLastDigit] = useState<number | null>(null);
+    const [touches, setTouches] = useState(0);
+
+    useEffect(() => {
+        setCounts(Array(10).fill(0));
+        setLastDigit(null);
+        setTouches(0);
+        let unsubscribe = () => {};
+        try {
+            unsubscribe = subscribeQuotes({ symbol, granularity: 0 }, (quote: any) => {
+                const value = Number(quote?.quote ?? quote?.price ?? quote);
+                if (!Number.isFinite(value)) return;
+                const digit = Number(String(value).replace(/\\D/g, '').slice(-1));
+                if (!Number.isInteger(digit)) return;
+                setLastDigit(digit);
+                setTouches(current => current + 1);
+                setCounts(current => current.map((count, index) => index === digit ? count + 1 : count));
+            });
+        } catch { /* Keep the tracker visible if the live stream is unavailable. */ }
+        return () => unsubscribe();
+    }, [subscribeQuotes, symbol]);
+
+    const total = counts.reduce((sum, count) => sum + count, 0);
+    const ranked = [...counts].map((count, digit) => ({ count, digit })).sort((a, b) => b.count - a.count);
+    const rankByDigit = new Map(ranked.map((entry, rank) => [entry.digit, rank]));
+    const toneFor = (digit: number) => {
+        const rank = rankByDigit.get(digit);
+        if (rank === 0) return 'tracker-digit--highest';
+        if (rank === 9) return 'tracker-digit--lowest';
+        if (rank === 1) return 'tracker-digit--second';
+        if (rank === 2) return 'tracker-digit--third';
+        return '';
+    };
+
+    return <section className='floating-digit-tracker' aria-label={`Live digit movement for ${symbol}`}>
+        <div className='floating-digit-tracker__digits'>{counts.map((count, digit) => <div key={digit} className={`tracker-digit ${toneFor(digit)} ${lastDigit === digit ? 'tracker-digit--touched' : ''}`}><strong>{digit}</strong><span>{total ? Math.round((count / total) * 100) : 0}%</span>{lastDigit === digit && <i aria-label={`Digit ${digit} touched`}>▲</i>}</div>)}</div>
+        <label className='floating-digit-tracker__select'><select value={tickLimit} onChange={event => setTickLimit(Number(event.target.value))}><option value={100}>100 Ticks</option><option value={250}>250 Ticks</option><option value={500}>500 Ticks</option></select><span>⌄</span></label>
+        <small className='floating-digit-tracker__status'>{touches ? `${touches} live ticks` : 'Waiting for live ticks'}</small>
+    </section>;
+};
 import classNames from 'classnames';
 import { observer } from 'mobx-react-lite';
 /* [AI] - Analytics removed - rudderstack event tracking removed */
@@ -94,6 +138,7 @@ const Chart = observer(({ show_digits_stats }: { show_digits_stats: boolean }) =
             })}
             dir='ltr'
         >
+            <FloatingDigitTracker symbol={symbol} subscribeQuotes={subscribeQuotes} />
             <SmartChart
                 id={`dbot-${symbol}`}
                 key={`chart-${symbol}`}
