@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import './hedging.scss';
 
 type HedgingMode = 'over-under' | 'ups-downs' | 'high-low';
@@ -30,6 +30,13 @@ const volatilityMarkets: VolatilityMarket[] = [
 const volatilityCategories = [...new Set(volatilityMarkets.map(market => market.category))];
 
 const marketIconValue = (name: string) => name.match(/\\d+/)?.[0] ?? '100';
+
+function scrollToPanelPosition(panelSelector: string, target: 'top' | 'bottom' | number) {
+    const container = document.querySelector<HTMLElement>(panelSelector);
+    if (!container) return;
+    const topOffset = target === 'bottom' ? container.scrollHeight - container.clientHeight : target === 'top' ? 0 : target;
+    container.scrollTo({ top: Math.max(0, topOffset), behavior: 'smooth' });
+}
 
 const VolatilitySelector = () => {
     const [open, setOpen] = useState(false);
@@ -247,7 +254,18 @@ const OverUnder = () => {
 
 const Hedging = () => {
     const [activeMode, setActiveMode] = useState<HedgingMode>('high-low');
+    const panelRef = useRef<HTMLElement>(null);
     const selectMode = (mode: HedgingMode) => setActiveMode(mode);
+
+    useEffect(() => {
+        const frame = window.requestAnimationFrame(() => {
+            panelRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+            const panelId = activeMode === 'over-under' ? '#over-under-panel' : activeMode === 'ups-downs' ? '#ups-downs-panel' : '#high-low-panel';
+            scrollToPanelPosition(panelId, 'top');
+        });
+        return () => window.cancelAnimationFrame(frame);
+    }, [activeMode]);
+
     return (
         <section className='hedging' aria-labelledby='hedging-title'>
             <nav className='hedging__tabs' aria-label='Hedging strategies' role='tablist'>
@@ -255,7 +273,9 @@ const Hedging = () => {
                 <button className={`hedging__tab ${activeMode === 'ups-downs' ? 'hedging__tab--active' : ''}`} type='button' role='tab' aria-selected={activeMode === 'ups-downs'} onClick={() => selectMode('ups-downs')}>↗&nbsp; Only Ups / Downs</button>
                 <button className={`hedging__tab ${activeMode === 'high-low' ? 'hedging__tab--active' : ''}`} type='button' role='tab' aria-selected={activeMode === 'high-low'} onClick={() => selectMode('high-low')}>ϟ&nbsp; High / Low Tick</button>
             </nav>
-            {activeMode === 'ups-downs' ? <UpsDowns /> : activeMode === 'over-under' ? <OverUnder /> : <><VolatilitySelector /><div className='hedging__title-row'><div><p className='hedging__kicker'>Selected strategy</p><h1 id='hedging-title'>High / Low Tick</h1></div><p className='hedging__intro'>Trade both independent hedge legs from one view.</p></div><div className='tick-grid' role='tabpanel'><TickPanel mode='high' selected={activeMode === 'high-low'} onSelect={() => selectMode('high-low')} /><TickPanel mode='low' selected={activeMode === 'high-low'} onSelect={() => selectMode('high-low')} /></div></>}
+            <div ref={panelRef} id={`${activeMode}-panel`} className='panel-container' role='region' aria-label={`${activeMode} trading panel`}>
+                {activeMode === 'ups-downs' ? <UpsDowns /> : activeMode === 'over-under' ? <OverUnder /> : <><VolatilitySelector /><div className='hedging__title-row'><div><p className='hedging__kicker'>Selected strategy</p><h1 id='hedging-title'>High / Low Tick</h1></div><p className='hedging__intro'>Trade both independent hedge legs from one view.</p></div><div className='tick-grid' role='tabpanel'><TickPanel mode='high' selected={activeMode === 'high-low'} onSelect={() => selectMode('high-low')} /><TickPanel mode='low' selected={activeMode === 'high-low'} onSelect={() => selectMode('high-low')} /></div></>}
+            </div>
         </section>
     );
 };

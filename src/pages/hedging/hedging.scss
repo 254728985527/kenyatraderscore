@@ -1,6 +1,8 @@
 @use 'components/shared/styles/mixins' as *;
 
 .hedging { min-height:100%; padding:1.2rem 1.6rem 2.4rem; background:#f4f7fb; color:#132b4d; }
+.panel-container { max-height:40rem; overflow-y:auto; scroll-behavior:smooth; overscroll-behavior:contain; scrollbar-gutter:stable; padding:0 .25rem 1rem 0; }
+.panel-container:focus-visible { outline:2px solid #377cdb; outline-offset:3px; }
 .hedging__tabs { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1rem; max-width:132rem; margin:0 auto 2rem; }
 .hedging__tab { min-height:4.2rem; border:1px solid #c7d7ea; border-radius:1rem; background:#fff; color:#173457; font-size:1.55rem; font-weight:700; cursor:pointer; box-shadow:0 .2rem .5rem rgb(27 61 101 / 8%); transition:background .2s, color .2s, transform .2s; }
 .hedging__tab:hover { transform:translateY(-1px); background:#f8fbff; }
