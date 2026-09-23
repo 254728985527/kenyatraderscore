@@ -254,8 +254,10 @@ const OverUnder = () => {
 
 const Hedging = () => {
     const [activeMode, setActiveMode] = useState<HedgingMode>('high-low');
+    const [zoom, setZoom] = useState(1);
     const panelRef = useRef<HTMLElement>(null);
     const selectMode = (mode: HedgingMode) => setActiveMode(mode);
+    const changeZoom = (amount: number) => setZoom(value => Math.min(2, Math.max(0.5, Number((value + amount).toFixed(1)))));
 
     useEffect(() => {
         const frame = window.requestAnimationFrame(() => {
@@ -273,8 +275,11 @@ const Hedging = () => {
                 <button className={`hedging__tab ${activeMode === 'ups-downs' ? 'hedging__tab--active' : ''}`} type='button' role='tab' aria-selected={activeMode === 'ups-downs'} onClick={() => selectMode('ups-downs')}>↗&nbsp; Only Ups / Downs</button>
                 <button className={`hedging__tab ${activeMode === 'high-low' ? 'hedging__tab--active' : ''}`} type='button' role='tab' aria-selected={activeMode === 'high-low'} onClick={() => selectMode('high-low')}>ϟ&nbsp; High / Low Tick</button>
             </nav>
-            <div ref={panelRef} id={`${activeMode}-panel`} className='panel-container' role='region' aria-label={`${activeMode} trading panel`}>
+            <div className='panel-toolbar' aria-label='Panel controls'><button type='button' onClick={() => changeZoom(-0.1)} aria-label='Zoom out'>−</button><output aria-live='polite'>{Math.round(zoom * 100)}%</output><button type='button' onClick={() => changeZoom(0.1)} aria-label='Zoom in'>+</button><button type='button' onClick={() => setZoom(1)}>Reset</button><button type='button' onClick={() => scrollToPanelPosition(`#${activeMode}-panel`, 'bottom')}>Scroll to bottom</button></div>
+            <div ref={panelRef} id={`${activeMode}-panel`} className='panel-container' role='region' aria-label={`${activeMode} trading panel`} onWheel={event => { if (event.ctrlKey) { event.preventDefault(); changeZoom(event.deltaY < 0 ? 0.1 : -0.1); } }}>
+                <div className='panel-zoom-content' style={{ transform: `scale(${zoom})` }}>
                 {activeMode === 'ups-downs' ? <UpsDowns /> : activeMode === 'over-under' ? <OverUnder /> : <><VolatilitySelector /><div className='hedging__title-row'><div><p className='hedging__kicker'>Selected strategy</p><h1 id='hedging-title'>High / Low Tick</h1></div><p className='hedging__intro'>Trade both independent hedge legs from one view.</p></div><div className='tick-grid' role='tabpanel'><TickPanel mode='high' selected={activeMode === 'high-low'} onSelect={() => selectMode('high-low')} /><TickPanel mode='low' selected={activeMode === 'high-low'} onSelect={() => selectMode('high-low')} /></div></>}
+                </div>
             </div>
         </section>
     );
