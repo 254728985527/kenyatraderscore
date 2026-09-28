@@ -18,14 +18,18 @@ window.Blockly.Blocks.purchase_hedge = {
     },
     definition() {
         return {
-            message0: localize('Purchase 1: %1 stake 1 %2'),
-            message1: localize('Purchase 2: %1 stake 2 %2'),
+            message0: localize('Purchase 1: %1 Barrier: %2 %3 stake 1 %4'),
+            message1: localize('Purchase 2: %1 Barrier: %2 %3 stake 2 %4'),
             args0: [
                 { type: 'field_dropdown', name: 'PURCHASE_1', options: [['', '']] },
+                { type: 'field_dropdown', name: 'BARRIER_TYPE_1', options: [['+', '+'], ['-', '-']] },
+                { type: 'field_number', name: 'BARRIER_1', value: 0.31, min: 0, precision: 0.01 },
                 { type: 'field_number', name: 'STAKE_1', value: 0.35, min: 0.35, precision: 0.01 },
             ],
             args1: [
                 { type: 'field_dropdown', name: 'PURCHASE_2', options: [['', '']] },
+                { type: 'field_dropdown', name: 'BARRIER_TYPE_2', options: [['+', '+'], ['-', '-']] },
+                { type: 'field_number', name: 'BARRIER_2', value: 0.31, min: 0, precision: 0.01 },
                 { type: 'field_number', name: 'STAKE_2', value: 0.35, min: 0.35, precision: 0.01 },
             ],
             previousStatement: null,
@@ -46,8 +50,11 @@ window.Blockly.Blocks.purchase_hedge = {
     onchange(event) {
         if (!this.workspace || window.Blockly.derivWorkspace.isFlyoutVisible || this.workspace.isDragging()) return;
         if (event.type === window.Blockly.Events.BLOCK_CREATE && event.ids.includes(this.id)) this.populateOptions(event);
-        if (event.type === window.Blockly.Events.BLOCK_CHANGE && ['TYPE_LIST', 'TRADETYPE_LIST'].includes(event.name)) {
+        if (event.type === window.Blockly.Events.BLOCK_CHANGE && ['TYPE_LIST', 'TRADETYPE_LIST', 'TRADETYPECAT_LIST'].includes(event.name)) {
             this.populateOptions(event);
+        }
+        if (event.type === window.Blockly.Events.BLOCK_CHANGE && ['PURCHASE_1', 'PURCHASE_2'].includes(event.name)) {
+            this.updateBarrierVisibility();
         }
     },
     populateOptions(event) {
@@ -56,6 +63,16 @@ window.Blockly.Blocks.purchase_hedge = {
             const field = this.getField(name);
             field?.updateOptions(options, { default_value: field.getValue(), event_group: event.group, should_pretend_empty: true });
         });
+        this.updateBarrierVisibility();
+    },
+    updateBarrierVisibility() {
+        const tradeDefinition = this.workspace?.getTradeDefinitionBlock();
+        const tradeType = tradeDefinition?.getChildByType('trade_definition_tradetype')?.getFieldValue('TRADETYPECAT_LIST');
+        const isHigherLower = tradeType === 'HIGHERLOWER';
+        ['1', '2'].forEach(index => {
+            ['BARRIER_TYPE_', 'BARRIER_', 'STAKE_'].forEach(prefix => this.getField(`${prefix}${index}`)?.setVisible(prefix === 'STAKE_' ? !isHigherLower : isHigherLower));
+        });
+        this.render();
     },
     customContextMenu(menu) {
         excludeOptionFromContextMenu(menu, [localize('Enable Block'), localize('Disable Block')]);
@@ -69,5 +86,11 @@ window.Blockly.JavaScript.javascriptGenerator.forBlock.purchase_hedge = block =>
     const second = block.getFieldValue('PURCHASE_2');
     const firstStake = Number(block.getFieldValue('STAKE_1')) || 0.35;
     const secondStake = Number(block.getFieldValue('STAKE_2')) || 0.35;
-    return `Bot.purchase('${first}', ${firstStake});\nBot.purchase('${second}', ${secondStake});\n`;
+    const firstBarrier = `${block.getFieldValue('BARRIER_TYPE_1')}${Number(block.getFieldValue('BARRIER_1')) || 0.31}`;
+    const secondBarrier = `${block.getFieldValue('BARRIER_TYPE_2')}${Number(block.getFieldValue('BARRIER_2')) || 0.31}`;
+    const tradeDefinition = block.workspace?.getTradeDefinitionBlock();
+    const isHigherLower = tradeDefinition?.getChildByType('trade_definition_tradetype')?.getFieldValue('TRADETYPECAT_LIST') === 'HIGHERLOWER';
+    const firstOptions = isHigherLower ? `, { barrierOffset: '${firstBarrier}' }` : `, { amount: ${firstStake} }`;
+    const secondOptions = isHigherLower ? `, { barrierOffset: '${secondBarrier}' }` : `, { amount: ${secondStake} }`;
+    return `Bot.purchase('${first}'${firstOptions});\nBot.purchase('${second}'${secondOptions});\n`;
 };
