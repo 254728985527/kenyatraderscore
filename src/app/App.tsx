@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { Suspense } from 'react';
 import React from 'react';
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
 import { cleanupUrl, handleOAuthCallback } from '@/external/deriv-core';
@@ -12,10 +12,9 @@ import { isPreviewMode, PREVIEW_BASE_PATH } from '@/utils/is-preview-mode';
 import { localize, TranslationProvider } from '@deriv-com/translations';
 import CoreStoreProvider from './CoreStoreProvider';
 import i18nInstance from './i18n';
+import AppRoot from './app-root';
+import Layout from '../components/layout';
 import './app-root.scss';
-
-const Layout = lazy(() => import('../components/layout'));
-const AppRoot = lazy(() => import('./app-root'));
 
 /**
  * Component wrapper to handle language URL parameter
