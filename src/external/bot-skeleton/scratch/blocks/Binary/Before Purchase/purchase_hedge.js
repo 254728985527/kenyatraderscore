@@ -18,10 +18,15 @@ window.Blockly.Blocks.purchase_hedge = {
     },
     definition() {
         return {
-            message0: localize('Hedge purchase: %1 and %2'),
+            message0: localize('Purchase 1: %1 stake 1 %2'),
+            message1: localize('Purchase 2: %1 stake 2 %2'),
             args0: [
                 { type: 'field_dropdown', name: 'PURCHASE_1', options: [['', '']] },
+                { type: 'field_number', name: 'STAKE_1', value: 0.35, min: 0.35, precision: 0.01 },
+            ],
+            args1: [
                 { type: 'field_dropdown', name: 'PURCHASE_2', options: [['', '']] },
+                { type: 'field_number', name: 'STAKE_2', value: 0.35, min: 0.35, precision: 0.01 },
             ],
             previousStatement: null,
             colour: window.Blockly.Colours.Special1.colour,
@@ -62,5 +67,7 @@ window.Blockly.Blocks.purchase_hedge = {
 window.Blockly.JavaScript.javascriptGenerator.forBlock.purchase_hedge = block => {
     const first = block.getFieldValue('PURCHASE_1');
     const second = block.getFieldValue('PURCHASE_2');
-    return `Bot.purchase('${first}');\nBot.purchase('${second}');\n`;
+    const firstStake = Number(block.getFieldValue('STAKE_1')) || 0.35;
+    const secondStake = Number(block.getFieldValue('STAKE_2')) || 0.35;
+    return `Bot.purchase('${first}', ${firstStake});\nBot.purchase('${second}', ${secondStake});\n`;
 };
