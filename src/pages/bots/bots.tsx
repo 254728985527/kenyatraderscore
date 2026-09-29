@@ -30,12 +30,6 @@ const Bots = observer(() => {
     const [status, setStatus] = useState('');
 
     const loadBot = async (bot: BotDefinition) => {
-        const workspace = window.Blockly?.derivWorkspace;
-        if (!workspace) {
-            setStatus(localize('Bot Builder is still loading. Please try again.'));
-            return;
-        }
-
         setLoadingId(bot.id);
         setStatus('');
         try {
@@ -43,9 +37,29 @@ const Bots = observer(() => {
             if (!response.ok) throw new Error(`Unable to load ${bot.file}`);
             const xmlText = await response.text();
             const xml = window.Blockly.utils.xml.textToDom(xmlText);
-            workspace.asyncClear();
-            window.Blockly.Xml.domToWorkspace(xml, workspace);
+
+            // Switch first so the builder mounts its workspace before importing XML.
             dashboard.setActiveTab(1);
+            const workspace = await new Promise<any>((resolve, reject) => {
+                const startedAt = Date.now();
+                const findWorkspace = () => {
+                    const mountedWorkspace = window.Blockly?.derivWorkspace;
+                    if (mountedWorkspace) {
+                        resolve(mountedWorkspace);
+                        return;
+                    }
+                    if (Date.now() - startedAt >= 5000) {
+                        reject(new Error('Blockly workspace did not mount'));
+                        return;
+                    }
+                    window.setTimeout(findWorkspace, 50);
+                };
+                findWorkspace();
+            });
+
+            workspace.clear();
+            window.Blockly.Xml.domToWorkspace(xml, workspace);
+            workspace.render();
             setStatus(`${bot.name} ${localize('loaded in Bot Builder')}`);
         } catch (error) {
             console.error('[v0] Failed to load bot XML:', error);
