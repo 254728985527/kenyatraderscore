@@ -20,6 +20,7 @@ const BOTS: BotDefinition[] = [
     { id: 'samuel-over-2', name: 'SAMUEL Over 2 PRO', description: 'PRO over 2 strategy', file: '/bots/samuel-over-2-pro.xml' },
     { id: 'over-2-pro', name: 'Over 2 Strategy PRO+', description: 'Advanced over 2 strategy', file: '/bots/over-2-strategy-pro.xml' },
     { id: 'over-2-entry', name: 'Over 2 Strategy + ENTRY', description: 'Over 2 strategy with entry rules', file: '/bots/over-2-strategy-entry.xml' },
+    { id: 'hedging', name: 'Hedging Bot', description: 'Higher/lower hedge strategy with all configured blocks', file: '/bots/hedging.xml' },
 ];
 
 const Bots = observer(() => {

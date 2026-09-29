@@ -1,0 +1,105 @@
+<xml xmlns="https://developers.google.com/blockly/xml" is_dbot="true" collection="false">
+  <block type="trade_definition" id="m:zz#~k1aIc9D,aE;_U+" deletable="false" x="0" y="60">
+    <statement name="TRADE_OPTIONS">
+      <block type="trade_definition_market" id="gmA@ew|7yMQ2WU%3$TgV" deletable="false" movable="false">
+        <mutation xmlns="http://www.w3.org/1999/xhtml" hide_trade_parameters="false" vh_enabled="false" vh_max_steps="3" vh_min_trades="1" vh_stake="0.35"></mutation>
+        <field name="MARKET_LIST">synthetic_index</field>
+        <field name="SUBMARKET_LIST">random_index</field>
+        <field name="SYMBOL_LIST">1HZ100V</field>
+        <field name="HIDE_TRADE_PARAMETERS">FALSE</field>
+        <field name="ALTERNATE_MARKETS">FALSE</field>
+        <field name="ALTERNATE_EVERY">1</field>
+        <field name="MULTI_MARKET">FALSE</field>
+        <field name="VH_ENABLED">FALSE</field>
+        <field name="VH_SETTINGS_BTN">VH Settings</field>
+        <next>
+          <block type="trade_definition_tradetype" id="@bzB^Rhh}B_.*?HE=tAz" deletable="false" movable="false">
+            <field name="TRADETYPECAT_LIST">digits</field>
+            <field name="TRADETYPE_LIST">matchesdiffers</field>
+            <next>
+              <block type="trade_definition_contracttype" id="n#.OvB#kn95s+}#!Yvuu" deletable="false" movable="false">
+                <field name="TYPE_LIST">both</field>
+                <next>
+                  <block type="trade_definition_candleinterval" id="FgtV*:MskBf0QOi8-#-%" deletable="false" movable="false">
+                    <field name="CANDLEINTERVAL_LIST">60</field>
+                    <next>
+                      <block type="trade_definition_restartbuysell" id="nS0O~g?+?(T`p}^`~m#+" deletable="false" movable="false">
+                        <field name="TIME_MACHINE_ENABLED">FALSE</field>
+                        <next>
+                          <block type="trade_definition_restartonerror" id="fToG^kkT9}j|}y!|cF|W" deletable="false" movable="false">
+                            <field name="RESTARTONERROR">TRUE</field>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+    <statement name="SUBMARKET">
+      <block type="trade_definition_tradeoptions" id="*DkJuOj7ioUzT1x2+yw.">
+        <mutation xmlns="http://www.w3.org/1999/xhtml" has_first_barrier="false" has_second_barrier="false" has_prediction="true"></mutation>
+        <field name="DURATIONTYPE_LIST">t</field>
+        <value name="DURATION">
+          <shadow type="math_number_positive" id="Kp8:x]N#$nV1{oN}#9BD">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+        <value name="AMOUNT">
+          <shadow type="math_number_positive" id="v`C[eW2{Qt/~iH^5Cq^;">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+        <value name="PREDICTION">
+          <shadow type="math_number_positive" id="ZNAnb(oPzdu-dQ#}BR0/" inline="true">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+      </block>
+    </statement>
+  </block>
+  <block type="during_purchase" id="R@-WkDGl8}I}ib/{v5`l" x="714" y="60">
+    <statement name="DURING_PURCHASE_STACK">
+      <block type="controls_if" id="Ei5=2?1k{3`c%c1`%8,.">
+        <value name="IF0">
+          <block type="check_sell" id="Q.72~a*7F]OZhO@ioNc6"></block>
+        </value>
+      </block>
+    </statement>
+  </block>
+  <block type="after_purchase" id="wTVqpbIGcIU(wPs_9=4q" x="714" y="292">
+    <statement name="AFTERPURCHASE_STACK">
+      <block type="trade_again" id="[c}#bH-W0rW)**4=f!wp"></block>
+    </statement>
+  </block>
+  <block type="before_purchase" id="hoFu9}1d4-_I#}dDqXDG" deletable="false" x="0" y="804">
+    <statement name="BEFOREPURCHASE_STACK">
+      <block type="apollo_hedge_purchase" id="A?{%/IQ_zn,w#aQBMh;3">
+        <field name="PURCHASE_A">DIGITMATCH</field>
+        <field name="BARRIER_A_SIGN">+</field>
+        <field name="BARRIER_A_VALUE">0.33</field>
+        <field name="SECOND_BARRIER_A_SIGN">-</field>
+        <field name="SECOND_BARRIER_A_VALUE">0.1</field>
+        <field name="PURCHASE_B">DIGITMATCH</field>
+        <field name="BARRIER_B_SIGN">+</field>
+        <field name="BARRIER_B_VALUE">0.33</field>
+        <field name="SECOND_BARRIER_B_SIGN">-</field>
+        <field name="SECOND_BARRIER_B_VALUE">0.1</field>
+        <value name="PREDICTION_A">
+          <shadow type="math_number_positive" id="{oukS;O%H#y1;v2:O:6B">
+            <field name="NUM">7</field>
+          </shadow>
+        </value>
+        <value name="PREDICTION_B">
+          <shadow type="math_number_positive" id="`!{UaN:Pp:+$[5i@6,-S">
+            <field name="NUM">8</field>
+          </shadow>
+        </value>
+      </block>
+    </statement>
+  </block>
+</xml>
