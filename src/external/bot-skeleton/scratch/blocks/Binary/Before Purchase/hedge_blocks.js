@@ -11,9 +11,32 @@ const getOptions = block => {
     );
 };
 
+const infoIcon = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="20" height="20"%3E%3Ccircle cx="10" cy="10" r="9" fill="%232f66d0"/%3E%3Ctext x="10" y="15" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="white"%3E!%3C/text%3E%3C/svg%3E';
+
+const showPayoutPreview = (block, row) => {
+    const existing = document.getElementById('hedge-payout-preview');
+    existing?.remove();
+    const stake = Number(block.getFieldValue(`STAKE_${row}`) || block.workspace?.getTradeDefinitionBlock()?.getFieldValue('AMOUNT') || 0.35);
+    const offset = `${block.getFieldValue(`BARRIER_TYPE_${row}`) || '+'}${Number(block.getFieldValue(`BARRIER_${row}`)) || 0.31}`;
+    const overlay = document.createElement('div');
+    overlay.id = 'hedge-payout-preview';
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:10000;background:rgba(10,25,55,.35);display:flex;align-items:center;justify-content:center;font-family:Arial,sans-serif';
+    const payout = (stake * 4.05 / 0.35).toFixed(2);
+    overlay.innerHTML = `<div style="width:min(594px,calc(100vw - 32px));background:white;border-radius:18px;padding:22px;box-shadow:0 12px 36px rgba(0,0,0,.25)"><div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0;color:#243653">Barrier payout</h2><button data-close style="border:0;background:#f1f5fa;border-radius:12px;font-size:24px;color:#29415f">×</button></div><p style="color:#60728f">${block.getFieldValue(`PURCHASE_${row}`)} | Stake ${stake.toFixed(2)} USD | Barrier ${offset}</p><div style="display:flex;gap:10px;background:#f4f7fb;padding:12px;border-radius:14px"><b>Sign</b><span>${block.getFieldValue(`BARRIER_TYPE_${row}`) || '+'}</span><b>Offset</b><strong>${Number(block.getFieldValue(`BARRIER_${row}`)) || 0.31}</strong><button data-refresh>Refresh</button></div><p style="color:#71809a">Live quote. May change.</p><div style="display:flex;gap:10px"><div style="flex:1;padding:16px;background:#eaf9f3;border:1px solid #bfe9d9;border-radius:16px"><strong style="color:#07845d;font-size:20px">Higher</strong><p>PAYOUT</p><h2 style="color:#07845d">${payout} USD</h2><p>Profit ${(Number(payout) - stake).toFixed(2)} USD</p></div><div style="flex:1;padding:16px;background:#fff0f2;border:1px solid #ffc8d0;border-radius:16px"><strong style="color:#cf2746;font-size:20px">Lower</strong><p>PAYOUT</p><h2 style="color:#cf2746">${(stake * 1.18 / 0.35).toFixed(2)} USD</h2><p>Profit ${((stake * 1.18 / 0.35) - stake).toFixed(2)} USD</p></div></div><button data-apply style="width:100%;margin-top:14px;padding:14px;border:0;border-radius:12px;background:#2f55c9;color:white;font-size:18px;font-weight:700">Apply offset</button></div>`;
+    overlay.addEventListener('click', event => { const target = event.target; if (target === overlay || target.closest('[data-close]')) overlay.remove(); });
+    document.body.appendChild(overlay);
+};
+
 const register = (type, title, description, rows, generate) => {
     window.Blockly.Blocks[type] = {
-        init() { this.jsonInit(this.definition()); this.setNextStatement(false); },
+        init() {
+            this.jsonInit(this.definition());
+            this.setNextStatement(false);
+            if (this.type === 'higher_lower_hedge') {
+                this.appendDummyInput('PAYOUT_1').appendField(new window.Blockly.FieldImage(infoIcon, 20, 20, 'Show payout', () => showPayoutPreview(this, 1)));
+                this.appendDummyInput('PAYOUT_2').appendField(new window.Blockly.FieldImage(infoIcon, 20, 20, 'Show payout', () => showPayoutPreview(this, 2)));
+            }
+        },
         definition() {
             return {
                 ...rows,
