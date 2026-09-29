@@ -1,5 +1,5 @@
 import './before_purchase';
 import './purchase';
-import './purchase_hedge';
+import './hedge_blocks';
 import './ask_price';
 import './payout';
