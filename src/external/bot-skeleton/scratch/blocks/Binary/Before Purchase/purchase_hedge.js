@@ -18,17 +18,19 @@ window.Blockly.Blocks.purchase_hedge = {
     },
     definition() {
         return {
-            message0: localize('Purchase 1: %1 Barrier: %2 stake 1 %3 Prediction: %4'),
-            message1: localize('Purchase 2: %1 Barrier: %2 stake 2 %3 Prediction: %4'),
+            message0: localize('Purchase 1: %1 Barrier: %2 %3 stake 1 %4 Prediction: %5'),
+            message1: localize('Purchase 2: %1 Barrier: %2 %3 stake 2 %4 Prediction: %5'),
             args0: [
                 { type: 'field_dropdown', name: 'PURCHASE_1', options: [['', '']] },
                 { type: 'field_dropdown', name: 'BARRIER_TYPE_1', options: [['+', '+'], ['-', '-']] },
+                { type: 'field_number', name: 'BARRIER_1', value: 0.31, min: 0, precision: 0.01 },
                 { type: 'field_number', name: 'STAKE_1', value: 0.35, min: 0.35, precision: 0.01 },
                 { type: 'field_number', name: 'PREDICTION_1', value: 1, min: 0, precision: 1 },
             ],
             args1: [
                 { type: 'field_dropdown', name: 'PURCHASE_2', options: [['', '']] },
                 { type: 'field_dropdown', name: 'BARRIER_TYPE_2', options: [['+', '+'], ['-', '-']] },
+                { type: 'field_number', name: 'BARRIER_2', value: 0.31, min: 0, precision: 0.01 },
                 { type: 'field_number', name: 'STAKE_2', value: 0.35, min: 0.35, precision: 0.01 },
                 { type: 'field_number', name: 'PREDICTION_2', value: 1, min: 0, precision: 1 },
             ],
@@ -71,7 +73,9 @@ window.Blockly.Blocks.purchase_hedge = {
         const isHigherLower = tradeType === 'HIGHERLOWER';
         ['1', '2'].forEach(index => {
             this.getField(`BARRIER_TYPE_${index}`)?.setVisible(isHigherLower);
-            this.getField(`PREDICTION_${index}`)?.setVisible(true);
+            this.getField(`BARRIER_${index}`)?.setVisible(isHigherLower);
+            this.getField(`STAKE_${index}`)?.setVisible(!isHigherLower);
+            this.getField(`PREDICTION_${index}`)?.setVisible(!isHigherLower);
         });
         this.render();
     },
@@ -89,12 +93,11 @@ window.Blockly.JavaScript.javascriptGenerator.forBlock.purchase_hedge = block =>
     const secondStake = Number(block.getFieldValue('STAKE_2')) || 0.35;
     const firstPrediction = Number(block.getFieldValue('PREDICTION_1')) || 1;
     const secondPrediction = Number(block.getFieldValue('PREDICTION_2')) || 1;
-    const firstBarrier = `${block.getFieldValue('BARRIER_TYPE_1')}${firstPrediction}`;
-    const secondBarrier = `${block.getFieldValue('BARRIER_TYPE_2')}${secondPrediction}`;
+    const firstBarrier = `${block.getFieldValue('BARRIER_TYPE_1')}${Number(block.getFieldValue('BARRIER_1')) || 0.31}`;
+    const secondBarrier = `${block.getFieldValue('BARRIER_TYPE_2')}${Number(block.getFieldValue('BARRIER_2')) || 0.31}`;
     const tradeDefinition = block.workspace?.getTradeDefinitionBlock();
     const tradeType = tradeDefinition?.getChildByType('trade_definition_tradetype')?.getFieldValue('TRADETYPECAT_LIST');
-    const usesHedgeBarrier = ['HIGHERLOWER', 'OVERUNDER'].includes(tradeType);
-    const firstOptions = usesHedgeBarrier ? `, { amount: ${firstStake}, barrierOffset: '${firstBarrier}' }` : `, { amount: ${firstStake} }`;
-    const secondOptions = usesHedgeBarrier ? `, { amount: ${secondStake}, barrierOffset: '${secondBarrier}' }` : `, { amount: ${secondStake} }`;
+    const firstOptions = tradeType === 'HIGHERLOWER' ? `, { barrierOffset: '${firstBarrier}' }` : `, { amount: ${firstStake} }`;
+    const secondOptions = tradeType === 'HIGHERLOWER' ? `, { barrierOffset: '${secondBarrier}' }` : `, { amount: ${secondStake} }`;
     return `Bot.purchase('${first}'${firstOptions});\nBot.purchase('${second}'${secondOptions});\n`;
 };
