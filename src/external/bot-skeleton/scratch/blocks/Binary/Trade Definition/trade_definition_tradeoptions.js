@@ -83,6 +83,10 @@ window.Blockly.Blocks.trade_definition_tradeoptions = {
         modifyContextMenu(menu);
     },
     onchange(event) {
+        const hedgeBlock = this.workspace?.getAllBlocks(true).find(block => block.type === 'purchase_hedge');
+        const tradeType = this.workspace?.getAllBlocks(true).find(block => block.type === 'trade_definition_tradetype')?.getFieldValue('TRADETYPECAT_LIST');
+        const amountInput = this.inputList.find(input => input.name === 'AMOUNT');
+        amountInput?.setVisible(!(hedgeBlock && tradeType === 'OVERUNDER'));
         if (event.type === 'change') {
             const selected_block = this.workspace.getBlockById(event.blockId);
             selected_block?.parentBlock_?.inputList
