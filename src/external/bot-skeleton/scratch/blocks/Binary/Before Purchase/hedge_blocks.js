@@ -50,7 +50,7 @@ const register = (type, title, description, rows, generate) => {
         },
         meta() { return { display_name: localize(title), description: localize(description), key_words: localize('purchase hedge') }; },
         onchange(event) {
-            if (!this.workspace || window.Blockly.derivWorkspace.isFlyoutVisible || this.workspace.isDragging()) return;
+            if (!this.workspace || window.Blockly?.derivWorkspace?.isFlyoutVisible || this.workspace.isDragging()) return;
             if (event.type === window.Blockly.Events.BLOCK_CREATE && event.ids.includes(this.id)) this.updateOptions(event);
             if (event.type === window.Blockly.Events.BLOCK_CHANGE && ['TYPE_LIST', 'TRADETYPE_LIST'].includes(event.name)) this.updateOptions(event);
         },

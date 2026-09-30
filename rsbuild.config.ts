@@ -50,6 +50,8 @@ export default defineConfig({
         GD_API_KEY: JSON.stringify(process.env.GD_API_KEY),
       },
     },
+  },
+  resolve: {
     alias: {
       // Resolve from wherever the package actually lives so the build works
       // both standalone and inside the monorepo (npm workspaces hoist react to

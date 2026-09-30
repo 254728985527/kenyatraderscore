@@ -282,10 +282,12 @@
     &:not(&--no-placeholder) {
         $parent: &;
 
-        #{$parent}__label {
-            color: var(--text-general);
-            transition: 0.25s ease all;
-            transform: translateZ(0);
+        & {
+            #{$parent}__label {
+                color: var(--text-general);
+                transition: 0.25s ease all;
+                transform: translateZ(0);
+            }
         }
     }
 
