@@ -82,14 +82,16 @@ export default Engine =>
                     delayIndex++
                 ).then(onSuccess);
             }
-            const trade_option = tradeOptionToBuy(contract_type, { ...this.tradeOptions, ...purchaseOptions });
+            const { hedge: hedgeContext, ...apiPurchaseOptions } = purchaseOptions;
+            this.currentHedgeContext = hedgeContext;
+            const trade_option = tradeOptionToBuy(contract_type, { ...this.tradeOptions, ...apiPurchaseOptions });
             const action = () => api_base.api.send(trade_option);
 
             this.isSold = false;
 
             contractStatus({
                 id: 'contract.purchase_sent',
-                data: this.tradeOptions.amount,
+                data: purchaseOptions.amount ?? this.tradeOptions.amount,
             });
 
             if (!this.options.timeMachineEnabled) {
