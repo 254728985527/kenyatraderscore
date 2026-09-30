@@ -58,6 +58,9 @@ export default defineConfig({
       // the repo root, so a cwd-relative './node_modules/react' fails in CI).
       react: path.dirname(require.resolve('react/package.json')),
       'react-dom': path.dirname(require.resolve('react-dom/package.json')),
+      // Quill UI 1.24 ships an ESM theme provider that Rsbuild's dev runtime
+      // cannot register correctly; use its CommonJS entry for stable preview/deploy loading.
+      '@deriv-com/quill-ui': require.resolve('@deriv-com/quill-ui'),
       '@/external': path.resolve(__dirname, './src/external'),
       '@/components': path.resolve(__dirname, './src/components'),
       '@/hooks': path.resolve(__dirname, './src/hooks'),
