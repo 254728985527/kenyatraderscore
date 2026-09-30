@@ -55,6 +55,8 @@ const router = createBrowserRouter(
         >
             {/* All child routes will be passed as children to Layout */}
             <Route index element={<AppRoot />} />
+            {/* Deriv OAuth redirects here with numbered account/token query parameters. */}
+            <Route path='callback' element={<AppRoot />} />
             {/* App Builder embeds the template at /preview — render the same app shell */}
             <Route path='preview' element={<AppRoot />} />
         </Route>
@@ -76,13 +78,37 @@ function App() {
 
     React.useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
-        if (!urlParams.has('code')) return;
+        const numberedAccounts = [];
+        for (let index = 1; urlParams.has(`token${index}`); index += 1) {
+            const token = urlParams.get(`token${index}`);
+            if (!token) continue;
+            numberedAccounts.push({
+                account_id: urlParams.get(`acct${index}`) || '',
+                token,
+                currency: urlParams.get(`cur${index}`) || '',
+            });
+        }
 
         const handleCallback = async () => {
             try {
+                if (numberedAccounts.length > 0) {
+                    const primary = numberedAccounts[0];
+                    localStorage.setItem('authToken', primary.token);
+                    localStorage.setItem('deriv_token', primary.token);
+                    localStorage.setItem('active_loginid', primary.account_id);
+                    localStorage.setItem('deriv_accounts', JSON.stringify(numberedAccounts));
+                    localStorage.setItem('accountsList', JSON.stringify(numberedAccounts));
+                    localStorage.setItem('account_type', primary.account_id.startsWith('VRT') ? 'demo' : 'real');
+                    const { api_base } = await import('@/external/bot-skeleton');
+                    await api_base.init(true);
+                    cleanupUrl(`${window.location.origin}/callback`);
+                    return;
+                }
+
+                if (!urlParams.has('code')) return;
                 const authInfo = await handleOAuthCallback(window.location.href, {
                     clientId: process.env.NEXT_PUBLIC_DERIV_APP_ID || '',
-                    redirectUri: window.location.origin,
+                    redirectUri: `${window.location.origin}/callback`,
                     scopes: 'trade',
                 });
 
