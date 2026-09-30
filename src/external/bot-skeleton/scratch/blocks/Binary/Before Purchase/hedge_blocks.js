@@ -66,17 +66,17 @@ const register = (type, title, description, rows, generate) => {
 };
 
 register('higher_lower_hedge', 'Higher/Lower hedge purchase', 'Purchases Higher and Lower contracts with independent barrier offsets.', {
-    message0: localize('Purchase 1: %1 Barrier: Offset %2 %3'),
-    message1: localize('Purchase 2: %1 Barrier: Offset %2 %3'),
-    args0: [{ type: 'field_dropdown', name: 'PURCHASE_1', options: [['Higher', 'CALL']] }, { type: 'field_dropdown', name: 'BARRIER_TYPE_1', options: [['+', '+'], ['-', '-']] }, { type: 'field_number', name: 'BARRIER_1', value: 0.31, min: 0, precision: 0.01 }],
-    args1: [{ type: 'field_dropdown', name: 'PURCHASE_2', options: [['Lower', 'PUT']] }, { type: 'field_dropdown', name: 'BARRIER_TYPE_2', options: [['+', '+'], ['-', '-']] }, { type: 'field_number', name: 'BARRIER_2', value: 0.31, min: 0, precision: 0.01 }],
-}, block => `Bot.purchase('${block.getFieldValue('PURCHASE_1')}', { barrierOffset: '${block.getFieldValue('BARRIER_TYPE_1')}${Number(block.getFieldValue('BARRIER_1')) || 0.31}' });\nBot.purchase('${block.getFieldValue('PURCHASE_2')}', { barrierOffset: '${block.getFieldValue('BARRIER_TYPE_2')}${Number(block.getFieldValue('BARRIER_2')) || 0.31}' });\n`);
+    message0: localize('Purchase 1: %1 Barrier: Offset %2 %3 stake 1 %4'),
+    message1: localize('Purchase 2: %1 Barrier: Offset %2 %3 stake 2 %4'),
+    args0: [{ type: 'field_dropdown', name: 'PURCHASE_1', options: [['Higher', 'CALL']] }, { type: 'field_dropdown', name: 'BARRIER_TYPE_1', options: [['+', '+'], ['-', '-']] }, { type: 'field_number', name: 'BARRIER_1', value: 0.31, min: 0, precision: 0.01 }, { type: 'field_number', name: 'STAKE_1', value: 0.35, min: 0.35, precision: 0.01 }],
+    args1: [{ type: 'field_dropdown', name: 'PURCHASE_2', options: [['Lower', 'PUT']] }, { type: 'field_dropdown', name: 'BARRIER_TYPE_2', options: [['+', '+'], ['-', '-']] }, { type: 'field_number', name: 'BARRIER_2', value: 0.31, min: 0, precision: 0.01 }, { type: 'field_number', name: 'STAKE_2', value: 0.35, min: 0.35, precision: 0.01 }],
+}, block => `Bot.purchase('${block.getFieldValue('PURCHASE_1')}', { amount: ${Number(block.getFieldValue('STAKE_1')) || 0.35}, barrierOffset: '${block.getFieldValue('BARRIER_TYPE_1')}${Number(block.getFieldValue('BARRIER_1')) || 0.31}' });\nBot.purchase('${block.getFieldValue('PURCHASE_2')}', { amount: ${Number(block.getFieldValue('STAKE_2')) || 0.35}, barrierOffset: '${block.getFieldValue('BARRIER_TYPE_2')}${Number(block.getFieldValue('BARRIER_2')) || 0.31}' });\n`);
 
 register('only_up_down_hedge', 'Only Ups/Only Downs hedge purchase', 'Purchases Only Ups and Only Downs contracts independently.', {
-    message0: localize('Purchase 1: %1'), message1: localize('Purchase 2: %1'),
-    args0: [{ type: 'field_dropdown', name: 'PURCHASE_1', options: [['Only Ups', 'CALL']] }],
-    args1: [{ type: 'field_dropdown', name: 'PURCHASE_2', options: [['Only Downs', 'PUT']] }],
-}, block => `Bot.purchase('${block.getFieldValue('PURCHASE_1')}');\nBot.purchase('${block.getFieldValue('PURCHASE_2')}');\n`);
+    message0: localize('Purchase 1: %1 stake 1 %2'), message1: localize('Purchase 2: %1 stake 2 %2'),
+    args0: [{ type: 'field_dropdown', name: 'PURCHASE_1', options: [['Only Ups', 'CALL']] }, { type: 'field_number', name: 'STAKE_1', value: 0.35, min: 0.35, precision: 0.01 }],
+    args1: [{ type: 'field_dropdown', name: 'PURCHASE_2', options: [['Only Downs', 'PUT']] }, { type: 'field_number', name: 'STAKE_2', value: 0.35, min: 0.35, precision: 0.01 }],
+}, block => `Bot.purchase('${block.getFieldValue('PURCHASE_1')}', { amount: ${Number(block.getFieldValue('STAKE_1')) || 0.35} });\nBot.purchase('${block.getFieldValue('PURCHASE_2')}', { amount: ${Number(block.getFieldValue('STAKE_2')) || 0.35} });\n`);
 
 register('over_under_hedge', 'Over/Under hedge purchase', 'Purchases Over and Under contracts with independent stakes and predictions.', {
     message0: localize('Purchase 1: %1 stake 1 %2 Prediction: %3'), message1: localize('Purchase 2: %1 stake 2 %2 Prediction: %3'),
