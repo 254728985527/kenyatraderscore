@@ -283,9 +283,11 @@ export default class TicksService {
                     }
                 })
                 .catch(error => {
-                    // Handle AlreadySubscribed errors gracefully - they're not fatal
-                    if (error?.error?.code === 'AlreadySubscribed') {
-                        // For AlreadySubscribed errors, we can still resolve with existing data
+                    const errorCode = error?.error?.code ?? error?.code;
+
+                    // These responses are expected when a stream is already active or the market is closed.
+                    // Resolve with cached data so a closed market does not surface as an unhandled runtime error.
+                    if (errorCode === 'AlreadySubscribed' || errorCode === 'MarketIsClosed') {
                         if (style === 'ticks' && this.ticks.has(symbol)) {
                             resolve(this.ticks.get(symbol));
                         } else if (style === 'candles' && this.candles.hasIn([symbol, Number(granularity)])) {
