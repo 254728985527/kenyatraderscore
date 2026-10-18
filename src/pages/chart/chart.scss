@@ -122,6 +122,48 @@
 }
 
 // Safari-specific fixes
+.chart-tick-indicators {
+    inset: 0;
+    pointer-events: none;
+    position: absolute;
+    z-index: 4;
+}
+
+.chart-tick-indicator {
+    height: 18px;
+    position: absolute;
+    transform: translate(-50%, -100%);
+    width: 14px;
+
+    &::before {
+        border-left: 7px solid transparent;
+        border-right: 7px solid transparent;
+        border-top: 18px solid currentColor;
+        content: '';
+        left: 0;
+        position: absolute;
+        top: 0;
+    }
+
+    &__core {
+        background: #fff;
+        border-radius: 50%;
+        height: 7px;
+        left: 3.5px;
+        position: absolute;
+        top: 3px;
+        width: 7px;
+    }
+
+    &--rise { color: #16a34a; }
+    &--fall { color: #dc2626; }
+    &--neutral { color: #6b7280; }
+}
+
+.dashboard__chart-wrapper {
+    position: relative;
+}
+
 .dashboard__chart-wrapper--safari {
     .smartcharts-mobile {
         .cq-context {

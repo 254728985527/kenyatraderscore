@@ -10,6 +10,7 @@ import { useStore } from '@/hooks/useStore';
 import { ChartTitle, SmartChart, TGranularity, TStateChangeListener } from '@deriv-com/smartcharts-champion';
 import { useDevice } from '@deriv-com/ui';
 import ToolbarWidgets from './toolbar-widgets';
+import ChartTickIndicators from './chart-tick-indicators';
 import '@deriv-com/smartcharts-champion/dist/smartcharts.css';
 
 const Chart = observer(({ show_digits_stats }: { show_digits_stats: boolean }) => {
@@ -94,6 +95,7 @@ const Chart = observer(({ show_digits_stats }: { show_digits_stats: boolean }) =
             })}
             dir='ltr'
         >
+            <ChartTickIndicators symbol={symbol} />
             <SmartChart
                 id={`dbot-${symbol}`}
                 key={`chart-${symbol}`}
