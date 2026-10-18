@@ -16,8 +16,24 @@ const HISTORY_SIZE = 1000;
 export default function ChartTickIndicators({ symbol }: { symbol: string }) {
     const containerRef = useRef<HTMLDivElement>(null);
     const [indicators, setIndicators] = useState<Indicator[]>([]);
-    const quotesRef = useRef<number[]>([]);
+    const [chartSize, setChartSize] = useState({ width: 0, height: 0 });
+    const quotesRef = useRef<{ epoch: number; quote: number }[]>([]);
     const previousSymbolRef = useRef(symbol);
+
+    useEffect(() => {
+        const element = containerRef.current;
+        if (!element) return undefined;
+
+        const updateSize = () => {
+            const rect = element.getBoundingClientRect();
+            setChartSize({ width: rect.width, height: rect.height });
+        };
+        updateSize();
+        const resizeObserver = new ResizeObserver(updateSize);
+        resizeObserver.observe(element);
+
+        return () => resizeObserver.disconnect();
+    }, []);
 
     useEffect(() => {
         if (previousSymbolRef.current !== symbol) {
@@ -36,8 +52,11 @@ export default function ChartTickIndicators({ symbol }: { symbol: string }) {
             const quote = Number(tick.quote);
             if (!Number.isFinite(quote)) return;
 
-            const previousQuote = quotesRef.current.at(-1);
-            quotesRef.current = [...quotesRef.current.slice(-(HISTORY_SIZE - 1)), quote];
+            const previousQuote = quotesRef.current.at(-1)?.quote;
+            quotesRef.current = [
+                ...quotesRef.current.slice(-(HISTORY_SIZE - 1)),
+                { epoch: Number(tick.epoch), quote },
+            ];
             const direction = previousQuote === undefined || quote === previousQuote
                 ? 'neutral'
                 : quote > previousQuote ? 'rise' : 'fall';
@@ -72,19 +91,26 @@ export default function ChartTickIndicators({ symbol }: { symbol: string }) {
     }, []);
 
     const positions = useMemo(() => {
-        const width = containerRef.current?.clientWidth ?? 0;
-        const height = containerRef.current?.clientHeight ?? 0;
-        const values = indicators.map(indicator => indicator.quote);
+        const history = quotesRef.current;
+        if (!history.length || !chartSize.width || !chartSize.height) return [];
+
+        const values = history.map(tick => tick.quote);
         const min = Math.min(...values);
         const max = Math.max(...values);
         const range = max - min || 1;
+        const plotHeight = Math.max(chartSize.height - 24, 1);
+        const lastIndex = history.length - 1;
 
-        return indicators.map((indicator, index) => ({
-            ...indicator,
-            left: indicators.length === 1 ? width / 2 : (index / (indicators.length - 1)) * width,
-            top: height - ((indicator.quote - min) / range) * Math.max(height - 24, 1),
-        }));
-    }, [indicators]);
+        return indicators.map(indicator => {
+            const tickIndex = history.findLastIndex(tick => tick.epoch === indicator.epoch && tick.quote === indicator.quote);
+            const index = tickIndex < 0 ? lastIndex : tickIndex;
+            return {
+                ...indicator,
+                left: (index / Math.max(lastIndex, 1)) * chartSize.width,
+                top: chartSize.height - ((indicator.quote - min) / range) * plotHeight,
+            };
+        });
+    }, [indicators, chartSize]);
 
     return (
         <div ref={containerRef} className='chart-tick-indicators' aria-hidden='true'>
