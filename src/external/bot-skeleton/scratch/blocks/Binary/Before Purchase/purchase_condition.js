@@ -23,6 +23,7 @@ window.Blockly.Blocks.purchase_condition = {
         this.jsonInit(this.definition());
         this.setNextStatement(false);
         this._purchaseConditionMode = 'compact';
+        this._purchaseConditionValues = { ...DEFAULTS };
     },
     definition() {
         return {
@@ -40,29 +41,54 @@ window.Blockly.Blocks.purchase_condition = {
     },
     redesign() {
         if (!this.workspace) return;
-        const label = this.getField('PURCHASE_1')?.getText()?.toLowerCase() || '';
-        const mode = label.includes('higher') || label.includes('lower') ? 'higher_lower' : label.includes('ups') || label.includes('downs') ? 'ups_downs' : label.includes('over') || label.includes('under') ? 'over_under' : 'compact';
-        if (mode === this._purchaseConditionMode && mode !== 'compact') return;
+
+        CONFIG_FIELDS.forEach(name => {
+            const field = this.getField(name);
+            if (field) this._purchaseConditionValues[name] = field.getValue();
+        });
+
+        const selectedTypes = PURCHASE_FIELDS.map(name => this.getField(name)?.getText()?.toLowerCase() || '');
+        const mode = selectedTypes.some(value => value.includes('higher') || value.includes('lower'))
+            ? 'higher_lower'
+            : selectedTypes.some(value => value.includes('ups') || value.includes('downs'))
+              ? 'ups_downs'
+              : selectedTypes.some(value => value.includes('over') || value.includes('under'))
+                ? 'over_under'
+                : 'compact';
+
+        if (mode === this._purchaseConditionMode) return;
+
         ['DUMMY0', 'DUMMY1', ...CONFIG_FIELDS, 'HEDGE_ROW_1', 'HEDGE_ROW_2'].forEach(name => {
             if (this.getInput(name)) this.removeInput(name);
         });
         this._purchaseConditionMode = mode;
-        if (mode === 'compact') return;
+
+        if (mode === 'compact') {
+            this.setColour(window.Blockly.Colours.Special1.colour);
+            this.render();
+            return;
+        }
+
         this.setColour('#dce1e5');
         [1, 2].forEach(index => {
+            const purchaseField = this.getField(`PURCHASE_${index}`);
             const row = this.appendDummyInput(`HEDGE_ROW_${index}`)
                 .appendField(localize(`Purchase ${index}:`))
-                .appendField(new window.Blockly.FieldDropdown(this.getField('PURCHASE_' + index).menuGenerator_), `PURCHASE_${index}`);
+                .appendField(new window.Blockly.FieldDropdown(purchaseField.menuGenerator_), `PURCHASE_${index}`);
             if (mode === 'higher_lower') {
                 row.appendField(localize('Barrier:'))
                     .appendField(new window.Blockly.FieldDropdown([['Offset', 'Offset']]), `BARRIER_${index}`)
-                    .appendField(new window.Blockly.FieldTextInput(DEFAULTS[`BARRIER_OFFSET_${index}`]), `BARRIER_OFFSET_${index}`)
+                    .appendField(new window.Blockly.FieldTextInput(this._purchaseConditionValues[`BARRIER_OFFSET_${index}`]), `BARRIER_OFFSET_${index}`)
                     .appendField('ⓘ')
                     .appendField(localize(`stake ${index}`))
-                    .appendField(new window.Blockly.FieldTextInput(DEFAULTS[`STAKE_${index}`]), `STAKE_${index}`);
+                    .appendField(new window.Blockly.FieldTextInput(this._purchaseConditionValues[`STAKE_${index}`]), `STAKE_${index}`);
             } else {
-                row.appendField(localize(`stake ${index}`)).appendField(new window.Blockly.FieldTextInput(DEFAULTS[`STAKE_${index}`]), `STAKE_${index}`);
-                if (mode === 'over_under') row.appendField(localize('Prediction:')).appendField(new window.Blockly.FieldTextInput(DEFAULTS[`PREDICTION_${index}`]), `PREDICTION_${index}`);
+                row.appendField(localize(`stake ${index}`))
+                    .appendField(new window.Blockly.FieldTextInput(this._purchaseConditionValues[`STAKE_${index}`]), `STAKE_${index}`);
+                if (mode === 'over_under') {
+                    row.appendField(localize('Prediction:'))
+                        .appendField(new window.Blockly.FieldTextInput(this._purchaseConditionValues[`PREDICTION_${index}`]), `PREDICTION_${index}`);
+                }
             }
         });
         this.render();
