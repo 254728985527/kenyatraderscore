@@ -74,7 +74,12 @@ window.Blockly.Blocks.purchase_condition = {
             const purchaseField = this.getField(`PURCHASE_${index}`);
             const row = this.appendDummyInput(`HEDGE_ROW_${index}`)
                 .appendField(localize(`Purchase ${index}:`))
-                .appendField(new window.Blockly.FieldDropdown(purchaseField.menuGenerator_), `PURCHASE_${index}`);
+                .appendField(
+                    new window.Blockly.FieldDropdown(() =>
+                        typeof purchaseField.getOptions === 'function' ? purchaseField.getOptions() : [['Rise', 'Rise']]
+                    ),
+                    `PURCHASE_${index}`
+                );
             if (mode === 'higher_lower') {
                 row.appendField(localize('Barrier:'))
                     .appendField(new window.Blockly.FieldDropdown([['Offset', 'Offset']]), `BARRIER_${index}`)
@@ -104,7 +109,7 @@ window.Blockly.Blocks.purchase_condition = {
         if (!this.workspace || window.Blockly.derivWorkspace.isFlyoutVisible || this.workspace.isDragging()) return;
 
         if (
-            (event.type === window.Blockly.Events.BLOCK_CREATE && event.ids.includes(this.id)) ||
+            (event.type === window.Blockly.Events.BLOCK_CREATE && event.ids?.includes(this.id)) ||
             (event.type === window.Blockly.Events.BLOCK_CHANGE &&
                 (event.name === 'TYPE_LIST' || event.name === 'TRADETYPE_LIST'))
         ) {
