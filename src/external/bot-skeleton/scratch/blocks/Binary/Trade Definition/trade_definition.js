@@ -13,6 +13,8 @@ import { defineContract } from '../../images';
 window.Blockly.Blocks.trade_definition = {
     init() {
         this.jsonInit(this.definition());
+        this.setInputsInline(false);
+        this.setCollapsed(false);
         this.setDeletable(false);
         this.isInit = false;
     },
