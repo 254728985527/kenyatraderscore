@@ -27,9 +27,9 @@ window.Blockly.Blocks.purchase_condition = {
     },
     definition() {
         return {
-            message0: localize('Purchase 1: {{ contract_type }}'),
+            message0: localize('Purchase 1: {{ contract_type }}', { contract_type: '%1' }),
             args0: [{ type: 'field_dropdown', name: 'PURCHASE_1', options: [['Rise', 'Rise']] }],
-            message1: localize('Purchase 2: {{ contract_type }}'),
+            message1: localize('Purchase 2: {{ contract_type }}', { contract_type: '%1' }),
             args1: [{ type: 'field_dropdown', name: 'PURCHASE_2', options: [['Rise', 'Rise']] }],
             previousStatement: null,
             colour: window.Blockly.Colours.Special1.colour,
