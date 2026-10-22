@@ -46,6 +46,7 @@ import './main.scss';
 
 const ChartWrapper = lazy(() => import('../chart/chart-wrapper'));
 const Tutorial = lazy(() => import('../tutorials'));
+const Robots = lazy(() => import('../robots/robots'));
 
 const AppWrapper = observer(() => {
     const { connectionStatus } = useApiBase();
@@ -76,9 +77,9 @@ const AppWrapper = observer(() => {
         [key: string]: string;
     };
     const { clear } = summary_card;
-    const { DASHBOARD, BOT_BUILDER } = DBOT_TABS;
+    const { DASHBOARD, BOT_BUILDER, ROBOTS } = DBOT_TABS;
     const init_render = React.useRef(true);
-    const hash = ['dashboard', 'bot_builder', 'chart', 'tutorial'];
+    const hash = ['dashboard', 'bot_builder', 'chart', 'tutorial', 'robots'];
     const { isDesktop } = useDevice();
     const location = useLocation();
     const navigate = useNavigate();
@@ -451,6 +452,24 @@ const AppWrapper = observer(() => {
                                         <Tutorial handleTabChange={handleTabChange} />
                                     </Suspense>
                                 </div>
+                            </div>
+                            <div
+                                label={
+                                    <>
+                                        <LegacyGuide1pxIcon
+                                            height='16px'
+                                            width='16px'
+                                            fill='var(--text-general)'
+                                            className='icon-general-fill-g-path'
+                                        />
+                                        <Localize i18n_default_text='Robots' />
+                                    </>
+                                }
+                                id='id-robots'
+                            >
+                                <Suspense fallback={<ChunkLoader message={localize('Please wait, loading robots...')} />}>
+                                    <Robots handleTabChange={handleTabChange} />
+                                </Suspense>
                             </div>
                         </Tabs>
                         {!isDesktop && right_tab_shadow && <span className='tabs-shadow tabs-shadow--right' />}{' '}

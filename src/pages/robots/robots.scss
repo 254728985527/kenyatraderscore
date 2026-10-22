@@ -1,0 +1,61 @@
+.robots-page {
+    min-height: 100%;
+    padding: 32px 40px 56px;
+    background: #f6f8fa;
+    color: #18283b;
+}
+
+.robots-page__heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    max-width: 1180px;
+    margin: 0 auto 28px;
+}
+
+.robots-page__eyebrow {
+    margin: 0 0 6px;
+    color: #0b6178;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .14em;
+}
+
+.robots-page h1 { margin: 0; font-size: 32px; line-height: 1.1; }
+.robots-page__heading p:last-child { margin: 8px 0 0; color: #617084; }
+.robots-page__count { padding: 8px 12px; border: 1px solid #d7e0e7; border-radius: 999px; background: #fff; color: #617084; font-size: 13px; }
+
+.robots-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    max-width: 1180px;
+    margin: 0 auto;
+}
+
+.robot-card {
+    display: flex;
+    min-height: 174px;
+    overflow: hidden;
+    padding: 0;
+    border: 1px solid #dbe3e9;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(24, 40, 59, .05);
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+}
+.robot-card:hover:not(:disabled), .robot-card:focus-visible { transform: translateY(-2px); border-color: #0b6178; box-shadow: 0 8px 20px rgba(24, 40, 59, .11); outline: none; }
+.robot-card:disabled { cursor: wait; opacity: .7; }
+.robot-card__accent { width: 7px; flex: 0 0 7px; }
+.robot-card__body { display: flex; flex: 1; flex-direction: column; align-items: flex-start; gap: 10px; padding: 20px 18px; }
+.robot-card__title { font-size: 17px; font-weight: 700; }
+.robot-card__description { min-height: 38px; color: #617084; font-size: 13px; line-height: 1.45; }
+.robot-card__action { margin-top: auto; color: #0b6178; font-size: 13px; font-weight: 700; }
+
+@media (max-width: 1000px) { .robots-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 720px) { .robots-page { padding: 24px 16px 40px; } .robots-page__heading { align-items: flex-start; flex-direction: column; margin-bottom: 20px; } .robots-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } }
+@media (max-width: 480px) { .robots-grid { grid-template-columns: 1fr; } }
