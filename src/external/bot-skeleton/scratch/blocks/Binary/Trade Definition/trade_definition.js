@@ -17,6 +17,20 @@ window.Blockly.Blocks.trade_definition = {
         this.setCollapsed(false);
         this.setDeletable(false);
         this.isInit = false;
+
+        window.setTimeout(() => {
+            const trade_options_input = this.getInput('SUBMARKET');
+            const has_trade_options = this.getBlocksInStatement('SUBMARKET').some(
+                block => block.type === 'trade_definition_tradeoptions'
+            );
+
+            if (!trade_options_input?.connection || has_trade_options || !this.workspace) return;
+
+            const trade_options_block = this.workspace.newBlock('trade_definition_tradeoptions');
+            trade_options_block.initSvg();
+            trade_options_input.connection.connect(trade_options_block.previousConnection);
+            trade_options_block.render();
+        }, 0);
     },
     definition() {
         return {
