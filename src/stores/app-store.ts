@@ -57,10 +57,20 @@ export default class AppStore {
         if (!this.dbot_store) return;
 
         blockly_store.setLoading(true);
-        await DBot.initWorkspace('/', this.dbot_store, this.api_helpers_store, ui.is_mobile, false);
 
-        blockly_store.setContainerSize();
-        blockly_store.setLoading(false);
+        try {
+            await Promise.race([
+                DBot.initWorkspace('/', this.dbot_store, this.api_helpers_store, ui.is_mobile, false),
+                new Promise((_, reject) => {
+                    window.setTimeout(() => reject(new Error('Blockly workspace initialization timed out')), 15000);
+                }),
+            ]);
+        } catch (error) {
+            console.error('[v0] Blockly workspace initialization failed:', error);
+        } finally {
+            blockly_store.setContainerSize();
+            blockly_store.setLoading(false);
+        }
 
         this.registerCurrencyReaction.call(this);
         this.registerOnAccountSwitch.call(this);
