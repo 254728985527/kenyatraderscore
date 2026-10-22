@@ -42,6 +42,7 @@ import RunPanel from '../../components/run-panel';
 import ChartModal from '../chart/chart-modal';
 import Dashboard from '../dashboard';
 import RunStrategy from '../dashboard/run-strategy';
+import RobotsTab from '../tutorials/robots-tab';
 import './main.scss';
 
 const ChartWrapper = lazy(() => import('../chart/chart-wrapper'));
@@ -451,6 +452,21 @@ const AppWrapper = observer(() => {
                                         <Tutorial handleTabChange={handleTabChange} />
                                     </Suspense>
                                 </div>
+                            </div>
+                            <div
+                                label={
+                                    <>
+                                        <LabelPairedPuzzlePieceTwoCaptionBoldIcon
+                                            height='24px'
+                                            width='24px'
+                                            fill='var(--text-general)'
+                                        />
+                                        <Localize i18n_default_text='Robots' />
+                                    </>
+                                }
+                                id='id-robots'
+                            >
+                                <RobotsTab />
                             </div>
                         </Tabs>
                         {!isDesktop && right_tab_shadow && <span className='tabs-shadow tabs-shadow--right' />}{' '}
