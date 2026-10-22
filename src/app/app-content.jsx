@@ -138,12 +138,15 @@ const AppContent = observer(() => {
 
     const changeActiveSymbolLoadingState = () => {
         init();
+        setIsLoading(false);
 
         const retrieveActiveSymbols = () => {
             const { active_symbols } = ApiHelpers.instance;
 
-            active_symbols.retrieveActiveSymbols(true).then(() => {
-                setIsLoading(false);
+            // Load symbols in the background so the shell and bot builder become
+            // interactive as soon as the API connection is ready.
+            active_symbols.retrieveActiveSymbols(true).catch(error => {
+                console.error('Active symbols initialization failed:', error);
             });
         };
 
