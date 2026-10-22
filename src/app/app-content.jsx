@@ -14,6 +14,7 @@ import useDevMode from '@/hooks/useDevMode';
 import { useStore } from '@/hooks/useStore';
 import useThemeSwitcher from '@/hooks/useThemeSwitcher';
 import { isPreviewMode } from '@/utils/is-preview-mode';
+import GTM from '@/utils/gtm';
 import { ThemeProvider } from '@deriv-com/quill-ui';
 import { setSmartChartsPublicPath } from '@deriv-com/smartcharts-champion';
 import { localize } from '@deriv-com/translations';
@@ -131,9 +132,7 @@ const AppContent = observer(() => {
         ServerTime.init(common);
         app.setDBotEngineStores();
         ApiHelpers.setInstance(app.api_helpers_store);
-        import('@/utils/gtm').then(({ default: GTM }) => {
-            GTM.init(store);
-        });
+        GTM.init(store);
     };
 
     const changeActiveSymbolLoadingState = () => {
