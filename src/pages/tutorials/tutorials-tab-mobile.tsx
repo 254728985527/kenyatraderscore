@@ -40,7 +40,7 @@ const TutorialsTabMobile = observer(({ tutorial_tabs, prev_active_tutorials }: T
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tutorial_tabs]);
 
-    const onFocusSearch = () => setActiveTabTutorial(3);
+    const onFocusSearch = () => setActiveTabTutorial(4);
 
     const scrollToTop = () => {
         if (scroll_ref.current) {
@@ -153,7 +153,7 @@ const TutorialsTabMobile = observer(({ tutorial_tabs, prev_active_tutorials }: T
                     'tutorials-mobile__guide': active_tab_tutorials === 0,
                     'tutorials-mobile__faq': active_tab_tutorials === 1,
                     'tutorials-mobile__qs-guide': active_tab_tutorials === 2,
-                    'tutorials-mobile__search': active_tab_tutorials === 3,
+                    'tutorials-mobile__search': active_tab_tutorials === 4,
                 })}
                 ref={scroll_ref}
             >

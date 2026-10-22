@@ -50,7 +50,7 @@ const TutorialsTabDesktop = observer(({ tutorial_tabs, prev_active_tutorials }: 
 
     React.useEffect(() => {
         if (faq_search_value !== '') {
-            setActiveTabTutorial(3);
+            setActiveTabTutorial(4);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [active_tab_tutorials]);
@@ -86,7 +86,7 @@ const TutorialsTabDesktop = observer(({ tutorial_tabs, prev_active_tutorials }: 
                     'tutorials-guide': prev_active_tutorials === 0,
                     'tutorials-faq': prev_active_tutorials === 1,
                     'tutorials-qs-guide': prev_active_tutorials === 2,
-                    'tutorials-search': active_tab_tutorials === 3,
+                    'tutorials-search': active_tab_tutorials === 4,
                 })}
                 active_index={active_tab_tutorials}
                 history={history}

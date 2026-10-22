@@ -6,6 +6,7 @@ import { localize } from '@deriv-com/translations';
 import { useDevice } from '@deriv-com/ui';
 import NoSearchResult from './common/no-search-result-found';
 import QuickStrategyGuides from './quick-strategy-content/quick-strategy-guides';
+import RobotsTab from './robots-tab';
 import FAQContent from './faq-content';
 import GuideContent from './guide-content';
 import TutorialsTabDesktop from './tutorials-tab-desktop';
@@ -64,6 +65,10 @@ const TutorialsTab = observer(({ handleTabChange }: TTutorialsTab) => {
         {
             label: localize('Quick strategy guides'),
             content: <QuickStrategyGuides quick_strategy_tab_content={quick_strategy_tab_content()} />,
+        },
+        {
+            label: localize('Robots'),
+            content: <RobotsTab />,
         },
         {
             label: localize('Search'),
