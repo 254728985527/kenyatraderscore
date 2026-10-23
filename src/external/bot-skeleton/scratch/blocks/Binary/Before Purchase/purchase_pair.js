@@ -12,7 +12,7 @@ window.Blockly.Blocks.purchase_pair = {
     },
     definition() {
         return {
-            message0: localize('Purchase 1: {{ contract_type }}'),
+            message0: localize('Purchase 1: {{ contract_type }}', { contract_type: '%1' }),
             args0: [
                 {
                     type: 'field_dropdown',
@@ -20,7 +20,7 @@ window.Blockly.Blocks.purchase_pair = {
                     options: EMPTY_OPTIONS,
                 },
             ],
-            message1: localize('Purchase 2: {{ contract_type }}'),
+            message1: localize('Purchase 2: {{ contract_type }}', { contract_type: '%1' }),
             args1: [
                 {
                     type: 'field_dropdown',
