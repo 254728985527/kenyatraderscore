@@ -98,6 +98,9 @@ export default defineConfig({
   dev: { hmr: true },
   tools: {
     rspack: {
+      experiments: {
+        lazyCompilation: false,
+      },
       module: {
         rules: [
           {
