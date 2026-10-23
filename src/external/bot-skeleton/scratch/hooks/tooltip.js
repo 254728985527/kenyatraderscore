@@ -1,4 +1,4 @@
-import { blueInfo } from '../blocks/images';
+const blueInfo = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"%3E%3Ccircle cx="8" cy="8" r="7" fill="%233b82f6"/%3E%3Cpath d="M8 7v5M8 4.5v.1" stroke="white" stroke-width="1.5" stroke-linecap="round"/%3E%3C/svg%3E';
 
 window.Blockly.Tooltip.HOVER_MS = 50;
 
