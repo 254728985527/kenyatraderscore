@@ -17,6 +17,7 @@ window.Blockly.Blocks.trade_definition_contracttype = {
             colour: window.Blockly.Colours.Special1.colour,
             colourSecondary: window.Blockly.Colours.Special1.colourSecondary,
             colourTertiary: window.Blockly.Colours.Special1.colourTertiary,
+            inputsInline: true,
             tooltip: localize(
                 'If the contract type is “Both”, then the Purchase Conditions should include both Rise and Fall using the “Conditional Block"'
             ),

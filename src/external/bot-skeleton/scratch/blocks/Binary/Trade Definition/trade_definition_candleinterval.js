@@ -16,6 +16,7 @@ window.Blockly.Blocks.trade_definition_candleinterval = {
             colour: window.Blockly.Colours.Base.colour,
             colourSecondary: window.Blockly.Colours.Base.colourSecondary,
             colourTertiary: window.Blockly.Colours.Base.colourTertiary,
+            inputsInline: true,
             previousStatement: null,
             nextStatement: null,
         });
