@@ -65,7 +65,10 @@ export default defineConfig({
     },
   },
   output: {
-    assetPrefix: isStaticBuild ? '/bot/preview/' : '/',
+    // Keep chunk URLs relative so the same build works at the root preview URL
+    // and when mounted under /bot/preview. An absolute prefix makes lazy chunks
+    // request /bot/preview/... even when the preview host serves the app at /. 
+    assetPrefix: './',
     distPath: {
       root: isStaticBuild ? 'out/preview' : 'dist',
     },
