@@ -678,7 +678,6 @@
       </block>
     </statement>
   </block>
-  <block type="platform_signature" id="KRFJhYSOdS-37qOO*y8u" deletable="false" movable="false" editable="false" x="1954" y="1486"></block>
   <block type="lists_create_with" id="list_mkts" disabled="true" x="0" y="2434">
     <field name="VARIABLE" id="@q[)-v$uFPhg.}8D!C~#">list</field>
   </block>
