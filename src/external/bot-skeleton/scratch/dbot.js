@@ -122,9 +122,7 @@ class DBot {
                     if (is_mobile) {
                         workspaceScale = 0.6;
                     } else {
-                        const scratch_div_width = document.getElementById('scratch_div')?.offsetWidth;
-                        const zoom_scale = scratch_div_width / window_width / 1.5;
-                        workspaceScale = zoom_scale;
+                        workspaceScale = 1.3;
                     }
                 }
                 const el_scratch_div = document.getElementById('scratch_div');
