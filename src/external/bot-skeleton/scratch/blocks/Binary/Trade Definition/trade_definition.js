@@ -70,6 +70,28 @@ window.Blockly.Blocks.trade_definition = {
             args2: [
                 {
                     type: 'field_image',
+                    src: ' ',
+                    width: 4,
+                    height: 25,
+                },
+                {
+                    type: 'field_label',
+                    text: localize('Pool:'),
+                    class: 'blocklyTextRootBlockHeader',
+                },
+                {
+                    type: 'input_dummy',
+                },
+            ],
+            args3: [
+                {
+                    type: 'input_statement',
+                    name: 'SUBMARKET',
+                },
+            ],
+            args4: [
+                {
+                    type: 'field_image',
                     src: ' ', // this is here to add extra padding
                     width: 4,
                     height: 25,
@@ -83,33 +105,11 @@ window.Blockly.Blocks.trade_definition = {
                     type: 'input_dummy',
                 },
             ],
-            args3: [
+            args5: [
                 {
                     type: 'input_statement',
                     name: 'INITIALIZATION',
                     check: null,
-                },
-            ],
-            args4: [
-                {
-                    type: 'field_image',
-                    src: ' ', // this is here to add extra padding
-                    width: 4,
-                    height: 25,
-                },
-                {
-                    type: 'field_label',
-                    text: localize('Pool:'),
-                    class: 'blocklyTextRootBlockHeader',
-                },
-                {
-                    type: 'input_dummy',
-                },
-            ],
-            args5: [
-                {
-                    type: 'input_statement',
-                    name: 'SUBMARKET',
                 },
             ],
             args6: [

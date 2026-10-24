@@ -20,7 +20,6 @@ window.Blockly.Blocks.trade_definition_tradeoptions = {
         this.jsonInit(this.definition());
         this.setInputsInline(true);
 
-        // Ensure one of this type per statement-stack
         this.setNextStatement(false);
     },
     definition() {
