@@ -8,7 +8,7 @@ import {
     modifyContextMenu,
     runIrreversibleEvents,
 } from '../../../utils';
-import { defineContract } from '../../images';
+const tradeParametersIcon = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28"%3E%3Cg fill="none" stroke="white" stroke-width="2" stroke-linecap="round"%3E%3Cpath d="M4 7h20M4 14h20M4 21h20"/%3E%3Ccircle cx="10" cy="7" r="2.5" fill="%23064e72"/%3E%3Ccircle cx="18" cy="14" r="2.5" fill="%23064e72"/%3E%3Ccircle cx="12" cy="21" r="2.5" fill="%23064e72"/%3E%3C/g%3E%3C/svg%3E';
 
 window.Blockly.Blocks.trade_definition = {
     init() {
@@ -28,10 +28,10 @@ window.Blockly.Blocks.trade_definition = {
             args0: [
                 {
                     type: 'field_image',
-                    src: defineContract,
-                    width: 25,
-                    height: 25,
-                    alt: 'T',
+                    src: tradeParametersIcon,
+                    width: 28,
+                    height: 28,
+                    alt: 'Trade parameters',
                 },
                 {
                     type: 'field_label',
@@ -97,7 +97,7 @@ window.Blockly.Blocks.trade_definition = {
                 {
                     type: 'field_image',
                     src: ' ', // this is here to add extra padding
-                    width: 520,
+                    width: 720,
                     height: 10,
                 },
             ],

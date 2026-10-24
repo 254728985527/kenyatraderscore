@@ -1219,16 +1219,25 @@ drag a block and selected text moves instead.
 
     rect.blocklyFieldRect.blocklyDropdownRect {
         fill: #fff;
+        stroke: #c9d0d6;
+        stroke-width: 1px;
         rx: 16px;
         ry: 16px;
     }
 
+    .blocklyBlockCanvas .blocklyEditableText > .blocklyFieldRect,
+    .blocklyBlockCanvas .blocklyNonEditableText > .blocklyFieldRect {
+        rx: 7px;
+        ry: 7px;
+    }
+
     .blocklyTextRootBlockHeader,
     .blocklyTextRootBlockHeaderCollapsed {
-        width: 17rem !important;
+        width: 28rem !important;
         color: #fff;
         fill: #fff;
-        font-size: 1.9rem;
+        font-size: 1.65rem;
+        font-weight: 600;
     }
 
     .blocklyTextRootBlockHeaderCollapsed {
