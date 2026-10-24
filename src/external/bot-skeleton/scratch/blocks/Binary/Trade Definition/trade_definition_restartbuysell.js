@@ -15,9 +15,9 @@ window.Blockly.Blocks.trade_definition_restartbuysell = {
                     class: 'blocklyCheckbox',
                 },
             ],
-            colour: window.Blockly.Colours.Base.colour,
-            colourSecondary: window.Blockly.Colours.Base.colourSecondary,
-            colourTertiary: window.Blockly.Colours.Base.colourTertiary,
+            colour: window.Blockly.Colours.TradeParameters.colour,
+            colourSecondary: window.Blockly.Colours.TradeParameters.colourSecondary,
+            colourTertiary: window.Blockly.Colours.TradeParameters.colourTertiary,
             previousStatement: null,
             nextStatement: null,
         });

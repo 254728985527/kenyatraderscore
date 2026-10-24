@@ -12,6 +12,12 @@ const lightMode = () => {
         colourTertiary: '#6d7278',
     };
 
+    workspace.Colours.TradeParameters = {
+        colour: '#e5e7eb',
+        colourSecondary: '#d1d5db',
+        colourTertiary: '#9ca3af',
+    };
+
     workspace.Colours.Special1 = {
         colour: '#c2e2f8',
         colourSecondary: '#ffffff',

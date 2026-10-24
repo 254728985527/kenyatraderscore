@@ -28,9 +28,9 @@ window.Blockly.Blocks.trade_definition_market = {
                     options: [['', '']],
                 },
             ],
-            colour: window.Blockly.Colours.Special1.colour,
-            colourSecondary: window.Blockly.Colours.Special1.colourSecondary,
-            colourTertiary: window.Blockly.Colours.Special1.colourTertiary,
+            colour: window.Blockly.Colours.TradeParameters.colour,
+            colourSecondary: window.Blockly.Colours.TradeParameters.colourSecondary,
+            colourTertiary: window.Blockly.Colours.TradeParameters.colourTertiary,
             previousStatement: null,
             nextStatement: null,
         });

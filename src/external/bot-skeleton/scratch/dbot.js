@@ -115,16 +115,9 @@ class DBot {
             DBotStore.setInstance(store);
             const window_width = window.innerWidth;
             try {
-                let workspaceScale = 0.7;
+                const workspaceScale = 1;
 
                 const { handleFileChange } = DBotStore.instance;
-                if (window_width < 1640) {
-                    if (is_mobile) {
-                        workspaceScale = 0.6;
-                    } else {
-                        workspaceScale = 1.3;
-                    }
-                }
                 const el_scratch_div = document.getElementById('scratch_div');
                 if (!el_scratch_div) {
                     return;
