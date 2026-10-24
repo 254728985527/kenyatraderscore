@@ -63,7 +63,7 @@ window.Blockly.Blocks.trade_definition_tradeoptions = {
             colourSecondary: window.Blockly.Colours.Special1.colourSecondary,
             colourTertiary: window.Blockly.Colours.Special1.colourTertiary,
             previousStatement: null,
-            nextStatement: null,
+            nextStatement: true,
             tooltip: localize('Define your trade options such as duration and stake.'),
             category: window.Blockly.Categories.Trade_Definition,
         };
