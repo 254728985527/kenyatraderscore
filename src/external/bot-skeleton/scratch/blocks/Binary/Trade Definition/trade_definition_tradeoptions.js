@@ -20,16 +20,16 @@ window.Blockly.Blocks.trade_definition_tradeoptions = {
         this.jsonInit(this.definition());
         this.setInputsInline(true);
 
-        this.setNextStatement(false);
+        this.setNextStatement(true);
     },
     definition() {
         const is_stake = this.type === 'trade_definition_tradeoptions';
         return {
-            message0: localize('Duration: {{ duration_unit }} {{ duration_value }}', {
+            message0: localize('Pool: {{ duration_unit }} > {{ duration_value }} >', {
                 duration_unit: '%1',
                 duration_value: '%2',
             }),
-            message1: `${is_stake ? localize('Stake') : localize('Payout')}: %1 %2 %3`,
+            message1: localize('Qualifying threshold (%): %1 > pool trade scope: %2 %3'),
             args0: [
                 {
                     type: 'field_dropdown',

@@ -14,26 +14,40 @@ window.Blockly.Blocks.trade_definition = {
     init() {
         this.jsonInit(this.definition());
         this.setInputsInline(false);
+        this.getInput('SUBMARKET')?.setVisible(false);
         this.setCollapsed(false);
         this.setDeletable(false);
         this.isInit = false;
 
-        const ensureTradePoolBlock = () => {
-            const trade_options_input = this.getInput('SUBMARKET');
-            const existing_pool_block = trade_options_input?.connection?.targetBlock();
+        this.ensureTradePoolBlock = () => {
+            const trade_options_input = this.getInput('TRADE_OPTIONS');
+            const market_block = this.getChildByType('trade_definition_market');
+            const existing_pool_block = this.getBlocksInStatement('TRADE_OPTIONS').find(
+                block => block.type === 'trade_definition_tradeoptions'
+            );
+            const loaded_pool_block = this.getInput('SUBMARKET')?.connection?.targetBlock();
 
-            if (!trade_options_input?.connection || existing_pool_block || !this.workspace) return;
+            if (!trade_options_input?.connection || !market_block || !this.workspace) return;
 
-            const trade_options_block = this.workspace.newBlock('trade_definition_tradeoptions');
-            trade_options_block.initSvg();
-            trade_options_block.setMovable(false);
-            trade_options_input.connection.connect(trade_options_block.previousConnection);
-            trade_options_block.render();
+            const pool_block = existing_pool_block || loaded_pool_block || this.workspace.newBlock('trade_definition_tradeoptions');
+            if (!pool_block.workspace) return;
+
+            const next_block = market_block.nextConnection?.targetBlock();
+            if (pool_block.previousConnection?.targetConnection !== market_block.nextConnection) {
+                pool_block.unplug(false);
+                if (next_block) next_block.unplug(false);
+                market_block.nextConnection?.connect(pool_block.previousConnection);
+                if (next_block) pool_block.nextConnection?.connect(next_block.previousConnection);
+            }
+
+            pool_block.setMovable(false);
+            pool_block.render();
+            this.render();
         };
 
-        window.setTimeout(ensureTradePoolBlock, 0);
-        window.setTimeout(ensureTradePoolBlock, 250);
-        window.setTimeout(ensureTradePoolBlock, 1000);
+        window.setTimeout(() => this.ensureTradePoolBlock(), 0);
+        window.setTimeout(() => this.ensureTradePoolBlock(), 250);
+        window.setTimeout(() => this.ensureTradePoolBlock(), 1000);
     },
     definition() {
         return {
@@ -41,9 +55,7 @@ window.Blockly.Blocks.trade_definition = {
             message1: '%1',
             message2: '%1 %2 %3',
             message3: '%1',
-            message4: '%1 %2 %3',
-            message5: '%1',
-            message6: '%1',
+            message4: '%1 %2',
             args0: [
                 {
                     type: 'field_image',
@@ -70,28 +82,6 @@ window.Blockly.Blocks.trade_definition = {
             args2: [
                 {
                     type: 'field_image',
-                    src: ' ',
-                    width: 4,
-                    height: 25,
-                },
-                {
-                    type: 'field_label',
-                    text: localize('Pool:'),
-                    class: 'blocklyTextRootBlockHeader',
-                },
-                {
-                    type: 'input_dummy',
-                },
-            ],
-            args3: [
-                {
-                    type: 'input_statement',
-                    name: 'SUBMARKET',
-                },
-            ],
-            args4: [
-                {
-                    type: 'field_image',
                     src: ' ', // this is here to add extra padding
                     width: 4,
                     height: 25,
@@ -105,14 +95,18 @@ window.Blockly.Blocks.trade_definition = {
                     type: 'input_dummy',
                 },
             ],
-            args5: [
+            args3: [
                 {
                     type: 'input_statement',
                     name: 'INITIALIZATION',
                     check: null,
                 },
             ],
-            args6: [
+            args4: [
+                {
+                    type: 'input_statement',
+                    name: 'SUBMARKET',
+                },
                 {
                     type: 'field_image',
                     src: ' ', // this is here to add extra padding
@@ -140,6 +134,9 @@ window.Blockly.Blocks.trade_definition = {
         modifyContextMenu(menu);
     },
     onchange(event) {
+        if (this.workspace && event.type !== window.Blockly.Events.SELECTED) {
+            this.ensureTradePoolBlock?.();
+        }
         if (event.type === window.Blockly.Events.SELECTED && !this.isInit) {
             this.isInit = true;
             initErrorHandlingListener('keydown');
@@ -165,10 +162,6 @@ window.Blockly.Blocks.trade_definition = {
                             block.unplug(true);
                         });
                     }
-                });
-            } else {
-                runIrreversibleEvents(() => {
-                    this.dispose();
                 });
             }
         }
@@ -208,7 +201,7 @@ window.Blockly.JavaScript.javascriptGenerator.forBlock.trade_definition = block 
             : [contract_type];
 
     const initialization = window.Blockly.JavaScript.javascriptGenerator.statementToCode(block, 'INITIALIZATION');
-    const trade_options_statement = window.Blockly.JavaScript.javascriptGenerator.statementToCode(block, 'SUBMARKET');
+    const trade_options_statement = window.Blockly.JavaScript.javascriptGenerator.statementToCode(block, 'TRADE_OPTIONS');
 
     const code = `  
     BinaryBotPrivateInit = function BinaryBotPrivateInit() {
