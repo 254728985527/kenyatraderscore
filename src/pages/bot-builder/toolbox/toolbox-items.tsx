@@ -61,33 +61,30 @@ export const ToolboxItems = () =>
                             <Field name='SUBMARKET_LIST' />
                             <Field name='SYMBOL_LIST' />
                             <Next>
-                                <Block type='trade_definition_tradetype' deletable='false' movable='false'>
-                                    <Field name='TRADETYPECAT_LIST' />
-                                    <Field name='TRADETYPE_LIST' />
+                                <Block type='trade_definition_pool' deletable='false' movable='false'>
+                                    <Field name='POOL_TYPE'>TARGET_DIGIT</Field>
+                                    <Field name='POOL_DIGIT'>0</Field>
+                                    <Field name='POOL_THRESHOLD'>10</Field>
+                                    <Field name='POOL_SCOPE'>ALL_MARKETS_15</Field>
+                                    <Field name='POOL_ENABLED'>TRUE</Field>
                                     <Next>
-                                        <Block type='trade_definition_contracttype' deletable='false' movable='false'>
-                                            <Field name='TYPE_LIST' />
+                                        <Block type='trade_definition_tradetype' deletable='false' movable='false'>
+                                            <Field name='TRADETYPECAT_LIST' />
+                                            <Field name='TRADETYPE_LIST' />
                                             <Next>
-                                                <Block
-                                                    type='trade_definition_candleinterval'
-                                                    deletable='false'
-                                                    movable='false'
-                                                >
-                                                    <Field name='CANDLEINTERVAL_LIST'>60</Field>
+                                                <Block type='trade_definition_contracttype' deletable='false' movable='false'>
+                                                    <Field name='TYPE_LIST' />
                                                     <Next>
-                                                        <Block
-                                                            type='trade_definition_restartbuysell'
-                                                            deletable='false'
-                                                            movable='false'
-                                                        >
-                                                            <Field name='TIME_MACHINE_ENABLED'>FALSE</Field>
+                                                        <Block type='trade_definition_candleinterval' deletable='false' movable='false'>
+                                                            <Field name='CANDLEINTERVAL_LIST'>60</Field>
                                                             <Next>
-                                                                <Block
-                                                                    type='trade_definition_restartonerror'
-                                                                    deletable='false'
-                                                                    movable='false'
-                                                                >
-                                                                    <Field name='RESTARTONERROR'>TRUE</Field>
+                                                                <Block type='trade_definition_restartbuysell' deletable='false' movable='false'>
+                                                                    <Field name='TIME_MACHINE_ENABLED'>FALSE</Field>
+                                                                    <Next>
+                                                                        <Block type='trade_definition_restartonerror' deletable='false' movable='false'>
+                                                                            <Field name='RESTARTONERROR'>TRUE</Field>
+                                                                        </Block>
+                                                                    </Next>
                                                                 </Block>
                                                             </Next>
                                                         </Block>
