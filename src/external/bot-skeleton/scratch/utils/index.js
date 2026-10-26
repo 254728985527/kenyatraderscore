@@ -1,6 +1,5 @@
 import { botNotification } from '@/components/bot-notification/bot-notification';
 import { notification_message } from '@/components/bot-notification/bot-notification-utils';
-import { getCurrencyDisplayCode } from '@/components/shared';
 import { localize } from '@deriv-com/translations';
 import { config } from '../../constants/config';
 import { LogTypes } from '../../constants/messages';
@@ -772,6 +771,5 @@ export const appendCollapsedProcedureBlocksFields = instance => {
 
 export const setCurrency = block_instance => {
     const currency_field = block_instance.getField('CURRENCY_LIST');
-    const { currency } = DBotStore.instance.client;
-    currency_field?.setValue(getCurrencyDisplayCode(currency));
+    currency_field?.setValue('USD');
 };
