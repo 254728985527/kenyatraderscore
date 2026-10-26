@@ -13,6 +13,7 @@ import SaveModal from '../dashboard/bot-list/save-modal';
 import BotBuilderTourHandler from '../tutorials/dbot-tours/bot-builder-tour';
 import QuickStrategy1 from './quick-strategy';
 import WorkspaceWrapper from './workspace-wrapper';
+import AIScanner from './ai-scanner';
 
 const BotBuilder = observer(() => {
     const { dashboard, app, run_panel, toolbar, quick_strategy, blockly_store } = useStore();
@@ -121,6 +122,7 @@ const BotBuilder = observer(() => {
             >
                 <div id='scratch_div' ref={el_ref}>
                     <WorkspaceWrapper />
+                    {active_tab === 1 && !is_preview_on_popup && <AIScanner />}
                 </div>
             </div>
             {active_tab === 1 && <BotBuilderTourHandler is_mobile={!isDesktop} />}
