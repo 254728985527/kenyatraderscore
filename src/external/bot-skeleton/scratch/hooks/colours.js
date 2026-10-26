@@ -1,39 +1,39 @@
 const lightMode = () => {
     const workspace = Blockly;
     workspace.Colours.RootBlock = {
-        colour: '#005b75',
-        colourSecondary: '#00465a',
-        colourTertiary: '#003746',
+        colour: '#ff6a00',
+        colourSecondary: '#d95400',
+        colourTertiary: '#a83f00',
     };
 
     workspace.Colours.Base = {
-        colour: '#c2e2f8',
-        colourSecondary: '#ffffff',
-        colourTertiary: '#6d7278',
+        colour: '#c7e7f7',
+        colourSecondary: '#a9d3e8',
+        colourTertiary: '#78aabd',
     };
 
     workspace.Colours.TradeParameters = {
-        colour: '#e5e7eb',
-        colourSecondary: '#d1d5db',
-        colourTertiary: '#9ca3af',
+        colour: '#c7e7f7',
+        colourSecondary: '#a9d3e8',
+        colourTertiary: '#78aabd',
     };
 
     workspace.Colours.Special1 = {
-        colour: '#c2e2f8',
-        colourSecondary: '#ffffff',
-        colourTertiary: '#6d7278',
+        colour: '#c7e7f7',
+        colourSecondary: '#a9d3e8',
+        colourTertiary: '#78aabd',
     };
 
     workspace.Colours.Special2 = {
-        colour: '#c2e2f8',
-        colourSecondary: '#ffffff',
-        colourTertiary: '#6d7278',
+        colour: '#c7e7f7',
+        colourSecondary: '#a9d3e8',
+        colourTertiary: '#78aabd',
     };
 
     workspace.Colours.Special3 = {
-        colour: '#c2e2f8',
-        colourSecondary: '#ffffff',
-        colourTertiary: '#6d7278',
+        colour: '#c7e7f7',
+        colourSecondary: '#a9d3e8',
+        colourTertiary: '#78aabd',
     };
 
     workspace.Colours.Special4 = {
