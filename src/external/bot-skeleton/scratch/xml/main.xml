@@ -7,21 +7,30 @@
         <field name="SUBMARKET_LIST"></field>
         <field name="SYMBOL_LIST"></field>
         <next>
-          <block type="trade_definition_tradetype" deletable="false" movable="false">
-            <field name="TRADETYPECAT_LIST"></field>
-            <field name="TRADETYPE_LIST"></field>
+          <block type="trade_definition_pool" deletable="false" movable="false">
+            <field name="POOL_TYPE">target_digit</field>
+            <field name="DIGIT">0</field>
+            <field name="THRESHOLD">10</field>
+            <field name="SCOPE">all_markets_15</field>
+            <field name="ENABLED">TRUE</field>
             <next>
-              <block type="trade_definition_contracttype" deletable="false" movable="false">
-                <field name="TYPE_LIST"></field>
+              <block type="trade_definition_tradetype" deletable="false" movable="false">
+                <field name="TRADETYPECAT_LIST"></field>
+                <field name="TRADETYPE_LIST"></field>
                 <next>
-                  <block type="trade_definition_candleinterval" deletable="false" movable="false">
-                    <field name="CANDLEINTERVAL_LIST">60</field>
+                  <block type="trade_definition_contracttype" deletable="false" movable="false">
+                    <field name="TYPE_LIST"></field>
                     <next>
-                      <block type="trade_definition_restartbuysell" deletable="false" movable="false">
-                        <field name="TIME_MACHINE_ENABLED">FALSE</field>
+                      <block type="trade_definition_candleinterval" deletable="false" movable="false">
+                        <field name="CANDLEINTERVAL_LIST">60</field>
                         <next>
-                          <block type="trade_definition_restartonerror" deletable="false" movable="false">
-                            <field name="RESTARTONERROR">TRUE</field>
+                          <block type="trade_definition_restartbuysell" deletable="false" movable="false">
+                            <field name="TIME_MACHINE_ENABLED">FALSE</field>
+                            <next>
+                              <block type="trade_definition_restartonerror" deletable="false" movable="false">
+                                <field name="RESTARTONERROR">TRUE</field>
+                              </block>
+                            </next>
                           </block>
                         </next>
                       </block>

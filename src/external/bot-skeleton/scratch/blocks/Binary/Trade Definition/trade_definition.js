@@ -23,13 +23,13 @@ window.Blockly.Blocks.trade_definition = {
             const trade_options_input = this.getInput('TRADE_OPTIONS');
             const market_block = this.getChildByType('trade_definition_market');
             const existing_pool_block = this.getBlocksInStatement('TRADE_OPTIONS').find(
-                block => block.type === 'trade_definition_tradeoptions'
+                block => block.type === 'trade_definition_pool'
             );
             const loaded_pool_block = this.getInput('SUBMARKET')?.connection?.targetBlock();
 
             if (!trade_options_input?.connection || !market_block || !this.workspace) return;
 
-            const pool_block = existing_pool_block || loaded_pool_block || this.workspace.newBlock('trade_definition_tradeoptions');
+            const pool_block = existing_pool_block || loaded_pool_block || this.workspace.newBlock('trade_definition_pool');
             if (!pool_block.workspace) return;
 
             const next_block = market_block.nextConnection?.targetBlock();
