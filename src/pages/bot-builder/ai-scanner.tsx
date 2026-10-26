@@ -7,7 +7,7 @@ type ScannerRow = { type: TradeType; symbol: string; percent: number; sample: nu
 
 const SYMBOLS = ['R_10', 'R_25', 'R_50', 'R_75', 'R_100', '1HZ10V', '1HZ25V', '1HZ50V', '1HZ75V', '1HZ100V', '1HZ150V', '1HZ200V', '1HZ250V', '1HZ300V'];
 const TRADE_TYPES: TradeType[] = ['OVER 2', 'UNDER 7', 'EVEN', 'ODD'];
-const WINDOW_SIZE = 20;
+const WINDOW_SIZE = 1000;
 
 const metric = (type: TradeType, digit: number) => {
     if (type === 'OVER 2') return digit > 2;
@@ -25,6 +25,7 @@ const AIScanner = () => {
     const [digits, setDigits] = React.useState<Record<string, number[]>>({});
     const [rows, setRows] = React.useState<ScannerRow[]>([]);
     const [activeType, setActiveType] = React.useState<TradeType | null>(null);
+    const [isOpen, setIsOpen] = React.useState(false);
     const [drag, setDrag] = React.useState({ x: 20, y: 84 });
     const dragRef = React.useRef<{ offsetX: number; offsetY: number } | null>(null);
 
@@ -70,12 +71,16 @@ const AIScanner = () => {
         setDrag({ x: Math.max(8, event.clientX - dragRef.current.offsetX), y: Math.max(8, event.clientY - dragRef.current.offsetY) });
     };
 
-    return <aside className='ai-scanner' style={{ left: drag.x, top: drag.y }} onPointerMove={onPointerMove} onPointerUp={() => { dragRef.current = null; }}>
+    return <aside className={`ai-scanner${isOpen ? ' is-open' : ' is-closed'}`} style={{ left: drag.x, top: drag.y }} onPointerMove={onPointerMove} onPointerUp={() => { dragRef.current = null; }}>
         <header className='ai-scanner__header' onPointerDown={event => { dragRef.current = { offsetX: event.clientX - drag.x, offsetY: event.clientY - drag.y }; }}>
-            <div className='ai-scanner__orb'>AI<span /></div>
-            <div><strong>AI Volatility Scanner</strong><small>Live 20-digit statistical analysis</small></div>
-            <AIQualityBadge />
+            <button className='ai-scanner__orb' type='button' aria-label={isOpen ? 'Close AI scanner' : 'Open AI scanner'} onClick={() => setIsOpen(open => !open)}>AI<span /></button>
+            {isOpen && <>
+                <div><strong>AI Volatility Scanner</strong><small>Live 1000-tick statistical analysis</small></div>
+                <AIQualityBadge />
+                <button className='ai-scanner__close' type='button' aria-label='Close AI scanner' onClick={() => setIsOpen(false)}>×</button>
+            </>}
         </header>
+        {isOpen && <>
         <div className='ai-scanner__notice'>No quantum service connected. Rankings use transparent live digit statistics and never guarantee outcomes.</div>
         <div className='ai-scanner__table' role='table' aria-label='AI volatility scanner results'>
             {rows.map(row => <div className='ai-scanner__row' key={row.type}>
@@ -86,6 +91,7 @@ const AIScanner = () => {
             </div>)}
         </div>
         <footer><span className='ai-scanner__live-dot' /> {adapterInitialized ? 'Listening to volatility tick streams' : 'Connecting to live tick service'} <span>Threshold 55%</span></footer>
+        </>}
     </aside>;
 };
 

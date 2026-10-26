@@ -16,7 +16,11 @@
 .ai-scanner__header strong { display: block; font-size: 14px; letter-spacing: .01em; }
 .ai-scanner__header small, .ai-scanner__row small { display: block; margin-top: 3px; color: #6b8494; font-size: 10px; }
 .ai-scanner__header small { color: #c7e7f7; }
-.ai-scanner__orb { position: relative; display: grid; place-items: center; width: 38px; height: 38px; color: white; background: #6952bc; border: 2px solid #a494ed; border-radius: 50%; font-weight: 800; font-size: 18px; box-shadow: 0 0 18px rgb(137 117 231 / 65%); }
+.ai-scanner__orb { position: relative; display: grid; place-items: center; width: 38px; height: 38px; flex: 0 0 38px; padding: 0; color: white; background: #6952bc; border: 2px solid #a494ed; border-radius: 50%; font-weight: 800; font-size: 18px; box-shadow: 0 0 18px rgb(137 117 231 / 65%); }
+.ai-scanner.is-closed { width: 64px; height: 64px; overflow: visible; background: transparent; border: 0; box-shadow: none; }
+.ai-scanner.is-closed .ai-scanner__header { width: 64px; height: 64px; padding: 0; justify-content: center; border-radius: 50%; background: transparent; }
+.ai-scanner.is-closed .ai-scanner__orb { width: 64px; height: 64px; flex-basis: 64px; font-size: 24px; cursor: pointer; }
+.ai-scanner__close { margin-left: auto; padding: 2px 6px !important; background: transparent !important; color: #d7f5ff !important; font-size: 18px !important; }
 .ai-scanner__orb span { position: absolute; top: 2px; right: 1px; width: 9px; height: 9px; background: #19d889; border: 2px solid #073f62; border-radius: 50%; }
 .ai-scanner__badge { margin-left: auto; padding: 4px 7px; color: #d9fff2; border: 1px solid rgb(217 255 242 / 35%); border-radius: 5px; font-size: 9px; letter-spacing: .08em; }
 .ai-scanner__notice { padding: 7px 14px; color: #5f7787; background: #f1f8fc; border-bottom: 1px solid #dceaf1; font-size: 10px; }
