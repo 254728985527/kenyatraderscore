@@ -14,7 +14,6 @@ window.Blockly.Blocks.trade_definition = {
     init() {
         this.jsonInit(this.definition());
         this.setInputsInline(false);
-        this.getInput('SUBMARKET')?.setVisible(false);
         this.setCollapsed(false);
         this.setDeletable(false);
         this.isInit = false;

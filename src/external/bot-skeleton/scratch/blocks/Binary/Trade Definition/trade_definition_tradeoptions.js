@@ -25,12 +25,14 @@ window.Blockly.Blocks.trade_definition_tradeoptions = {
     definition() {
         const is_stake = this.type === 'trade_definition_tradeoptions';
         return {
-            message0: localize('Pool: {{ duration_unit }} > {{ duration_value }} >', {
+            message0: localize('Trade options:'),
+            message1: localize('Duration: {{ duration_unit }} {{ duration_value }}', {
                 duration_unit: '%1',
                 duration_value: '%2',
             }),
-            message1: localize('Qualifying threshold (%): %1 > pool trade scope: %2 %3'),
-            args0: [
+            message2: `${is_stake ? localize('Stake') : localize('Payout')}: %1 %2 %3`,
+            args0: [],
+            args1: [
                 {
                     type: 'field_dropdown',
                     name: 'DURATIONTYPE_LIST',
@@ -42,7 +44,7 @@ window.Blockly.Blocks.trade_definition_tradeoptions = {
                     check: 'Number',
                 },
             ],
-            args1: [
+            args2: [
                 {
                     type: 'field_label',
                     name: 'CURRENCY_LIST',
@@ -59,9 +61,9 @@ window.Blockly.Blocks.trade_definition_tradeoptions = {
                     text: '',
                 },
             ],
-            colour: window.Blockly.Colours.TradeParameters.colour,
-            colourSecondary: window.Blockly.Colours.TradeParameters.colourSecondary,
-            colourTertiary: window.Blockly.Colours.TradeParameters.colourTertiary,
+            colour: window.Blockly.Colours.RootBlock.colour,
+            colourSecondary: window.Blockly.Colours.RootBlock.colourSecondary,
+            colourTertiary: window.Blockly.Colours.RootBlock.colourTertiary,
             previousStatement: null,
             nextStatement: true,
             tooltip: localize('Define your trade options such as duration and stake.'),
