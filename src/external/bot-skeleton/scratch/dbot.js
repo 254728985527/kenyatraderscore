@@ -180,6 +180,28 @@ class DBot {
                 let file_name = config().default_file_name;
                 if (recent_files && recent_files.length) {
                     const latest_file = recent_files[0];
+                    const latest_dom = window.Blockly.utils.xml.textToDom(latest_file.xml);
+                    const trade_options = latest_dom.querySelector('statement[name="TRADE_OPTIONS"]');
+                    const market_block = trade_options?.querySelector(':scope > block[type="trade_definition_market"]');
+                    if (trade_options && market_block && !trade_options.querySelector(':scope > block[type="trade_definition_pool"]')) {
+                        const pool_block = latest_dom.ownerDocument.createElement('block');
+                        pool_block.setAttribute('type', 'trade_definition_pool');
+                        pool_block.setAttribute('deletable', 'false');
+                        pool_block.setAttribute('movable', 'false');
+                        [['POOL_TYPE', 'TARGET_DIGIT'], ['POOL_DIGIT', '0'], ['POOL_THRESHOLD', '10'], ['POOL_SCOPE', 'ALL_MARKETS_15'], ['POOL_ENABLED', 'TRUE']].forEach(([name, value]) => {
+                            const field = latest_dom.ownerDocument.createElement('field');
+                            field.setAttribute('name', name);
+                            field.textContent = value;
+                            pool_block.appendChild(field);
+                        });
+                        const existing_next = market_block.querySelector(':scope > next');
+                        const pool_next = latest_dom.ownerDocument.createElement('next');
+                        if (existing_next?.firstElementChild) pool_next.appendChild(existing_next.firstElementChild);
+                        pool_block.appendChild(pool_next);
+                        if (existing_next) existing_next.replaceWith(pool_block);
+                        else market_block.appendChild(pool_block);
+                        latest_file.xml = new XMLSerializer().serializeToString(latest_dom);
+                    }
                     window.Blockly.derivWorkspace.strategy_to_load = latest_file.xml;
                     window.Blockly.getMainWorkspace().strategy_to_load = latest_file.xml;
                     file_name = latest_file.name;
