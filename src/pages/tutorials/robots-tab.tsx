@@ -8,7 +8,6 @@ import targetEntry from '@/xml/robots/target-entry.xml';
 import over2Entry from '@/xml/robots/over-2-entry.xml';
 import over2StrategyPro from '@/xml/robots/over-2-strategy-pro.xml';
 import upsDownsHedging from '@/xml/robots/ups-downs-hedging.xml';
-import upsDownsAuto from '@/xml/robots/ups-downs-auto.xml';
 import cashPrinter from '@/xml/robots/cash-printer.xml';
 import digitsOver4 from '@/xml/robots/digits-over-4.xml';
 import manualComDigit from '@/xml/robots/manual-com-digit.xml';
@@ -21,8 +20,7 @@ const robots: Robot[] = [
     { name: 'Target + Entry', description: 'Target entry workflow', xml: targetEntry },
     { name: 'Over 2 Strategy Entry', description: 'Over 2 entry strategy', xml: over2Entry },
     { name: 'Over 2 Strategy PRO', description: 'Advanced over 2 strategy', xml: over2StrategyPro },
-    { name: 'Ups / Downs Hedging', description: 'Ups and downs hedging bot', xml: upsDownsHedging },
-    { name: 'Ups / Downs Auto', description: 'Automated ups and downs bot', xml: upsDownsAuto },
+    { name: 'AI Smooth Run', description: 'AI-assisted ups and downs strategy', xml: upsDownsHedging },
     { name: 'Cash Printer', description: 'Cash printer bot', xml: cashPrinter },
     { name: 'Digits Over 4 PRO', description: 'Digits over 4 martingale', xml: digitsOver4 },
     { name: 'Manual COM Digit', description: 'Manual contract digit entry', xml: manualComDigit },
