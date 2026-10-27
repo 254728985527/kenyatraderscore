@@ -13,6 +13,7 @@ import SaveModal from '../dashboard/bot-list/save-modal';
 import BotBuilderTourHandler from '../tutorials/dbot-tours/bot-builder-tour';
 import QuickStrategy1 from './quick-strategy';
 import WorkspaceWrapper from './workspace-wrapper';
+import AIVolatilityScanner from './ai-volatility-scanner';
 
 const BotBuilder = observer(() => {
     const { dashboard, app, run_panel, toolbar, quick_strategy, blockly_store } = useStore();
@@ -119,6 +120,7 @@ const BotBuilder = observer(() => {
                     'bot-builder--tour-active': active_tour,
                 })}
             >
+                <AIVolatilityScanner />
                 <div id='scratch_div' ref={el_ref}>
                     <WorkspaceWrapper />
                 </div>
