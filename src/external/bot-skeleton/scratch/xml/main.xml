@@ -2,12 +2,19 @@
   <variables></variables>
   <block type="trade_definition" x="0" y="0">
     <statement name="TRADE_OPTIONS">
-      <block type="trade_definition_market" deletable="false" movable="false">
+          <block type="trade_definition_market" deletable="false" movable="false">
         <field name="MARKET_LIST"></field>
         <field name="SUBMARKET_LIST"></field>
         <field name="SYMBOL_LIST"></field>
         <next>
-          <block type="trade_definition_tradetype" deletable="false" movable="false">
+          <block type="trade_definition_pool" deletable="false" movable="false">
+            <field name="POOL_TYPE">TARGET_DIGIT</field>
+            <field name="POOL_DIGIT">0</field>
+            <field name="POOL_THRESHOLD">10</field>
+            <field name="POOL_SCOPE">ALL_MARKETS_15</field>
+            <field name="POOL_ENABLED">TRUE</field>
+            <next>
+              <block type="trade_definition_tradetype" deletable="false" movable="false">
             <field name="TRADETYPECAT_LIST"></field>
             <field name="TRADETYPE_LIST"></field>
             <next>
@@ -32,6 +39,7 @@
             </next>
           </block>
         </next>
+          </block>
       </block>
     </statement>
     <statement name="SUBMARKET">
