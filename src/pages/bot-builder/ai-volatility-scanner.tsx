@@ -35,6 +35,9 @@ const AIVolatilityScanner = observer(() => {
     const [markets, setMarkets] = React.useState<Record<string, Market>>({});
     const [states, setStates] = React.useState<Record<TradeType, Status>>({ 'OVER 2': 'WAITING', 'UNDER 7': 'WAITING', EVEN: 'WAITING', ODD: 'WAITING' });
     const [analysisWindow, setAnalysisWindow] = React.useState(120);
+    const [isOpen, setIsOpen] = React.useState(false);
+    const [position, setPosition] = React.useState({ x: 24, y: 92 });
+    const dragRef = React.useRef<{ offsetX: number; offsetY: number; moved: boolean } | null>(null);
     const serviceRef = React.useRef<TicksService | null>(null);
 
     React.useEffect(() => {
@@ -76,10 +79,41 @@ const AIVolatilityScanner = observer(() => {
         } catch { setStates(current => ({ ...current, [type]: 'ERROR' })); }
     };
 
-    return <section className='ai-scanner' aria-labelledby='ai-scanner-title'>
+    const handlePointerDown = (event: React.PointerEvent<HTMLButtonElement>) => {
+        const rect = event.currentTarget.getBoundingClientRect();
+        dragRef.current = { offsetX: event.clientX - rect.left, offsetY: event.clientY - rect.top, moved: false };
+        event.currentTarget.setPointerCapture(event.pointerId);
+    };
+
+    const handlePointerMove = (event: React.PointerEvent<HTMLButtonElement>) => {
+        if (!dragRef.current) return;
+        dragRef.current.moved = true;
+        setPosition({
+            x: Math.max(8, Math.min(window.innerWidth - 76, event.clientX - dragRef.current.offsetX)),
+            y: Math.max(56, Math.min(window.innerHeight - 76, event.clientY - dragRef.current.offsetY)),
+        });
+    };
+
+    const handlePointerUp = () => { dragRef.current = null; };
+
+    return <>
+        <button
+            className='ai-scanner-orb'
+            style={{ left: position.x, top: position.y }}
+            aria-label='Open AI volatility scanner'
+            onClick={() => { if (!dragRef.current?.moved) setIsOpen(open => !open); }}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+        >
+            <img src='https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-jexxzNwVYImWACTCn5iR0CvoZbUa2T.png' alt='' />
+        </button>
+        {isOpen && <section className='ai-scanner' aria-labelledby='ai-scanner-title'>
+        <button className='ai-scanner__close' aria-label='Close AI volatility scanner' onClick={() => setIsOpen(false)}>×</button>
         <div className='ai-scanner__header'><div><span className='ai-scanner__eyebrow'>LIVE STATISTICAL ENGINE</span><h2 id='ai-scanner-title'>AI Volatility Scanner</h2><p>Transparent digit analysis of live tick streams. This is statistical ranking, not quantum computing or a guaranteed prediction.</p></div><label className='ai-scanner__window'>Window<select value={analysisWindow} onChange={event => setAnalysisWindow(Number(event.target.value))}><option value='60'>60 ticks</option><option value='120'>120 ticks</option><option value='240'>240 ticks</option></select></label></div>
         <div className='ai-scanner__grid'>{TYPES.map(type => { const result = results[type]; const state = states[type] ?? 'WAITING'; return <article className='ai-scanner__card' key={type}><div className='ai-scanner__card-top'><span className='ai-scanner__type'>{type}</span><span className={`ai-scanner__status ai-scanner__status--${state.toLowerCase()}`}>{state}</span></div>{result ? <><strong className='ai-scanner__market'>{result.label}</strong><div className='ai-scanner__metrics'><span><b>{result.percentage.toFixed(1)}%</b> observed</span><span><b>{result.sampleSize}</b> ticks</span><span><b>{result.score.toFixed(1)}</b> score</span></div><div className='ai-scanner__meta'>Last digit {result.digits.at(-1)} · {result.speed} · updated {Math.max(0, Math.round((Date.now() - result.updatedAt) / 1000))}s ago</div></> : <div className='ai-scanner__empty'>NO QUALIFIED MARKET<span>Waiting for fresh data above {threshold}%</span></div>}<button className='ai-scanner__load' disabled={!result || state === 'LOADING' || state === 'ACTIVE'} onClick={() => loadBot(type)}>{state === 'LOADING' ? 'LOADING…' : state === 'ACTIVE' ? 'ACTIVE' : 'LOAD BOT'}</button></article>; })}</div>
-    </section>;
+        </section>}
+    </>;
 });
 
 export default AIVolatilityScanner;
