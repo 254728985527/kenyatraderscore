@@ -36,8 +36,9 @@ const AIVolatilityScanner = observer(() => {
     const [states, setStates] = React.useState<Record<TradeType, Status>>({ 'OVER 2': 'WAITING', 'UNDER 7': 'WAITING', EVEN: 'WAITING', ODD: 'WAITING' });
     const [analysisWindow, setAnalysisWindow] = React.useState(120);
     const [isOpen, setIsOpen] = React.useState(false);
-    const [position, setPosition] = React.useState({ x: 24, y: 92 });
+    const [position, setPosition] = React.useState({ x: 24, y: 160 });
     const dragRef = React.useRef<{ offsetX: number; offsetY: number; moved: boolean } | null>(null);
+    const wasDraggedRef = React.useRef(false);
     const serviceRef = React.useRef<TicksService | null>(null);
 
     React.useEffect(() => {
@@ -81,6 +82,7 @@ const AIVolatilityScanner = observer(() => {
 
     const handlePointerDown = (event: React.PointerEvent<HTMLButtonElement>) => {
         const rect = event.currentTarget.getBoundingClientRect();
+        wasDraggedRef.current = false;
         dragRef.current = { offsetX: event.clientX - rect.left, offsetY: event.clientY - rect.top, moved: false };
         event.currentTarget.setPointerCapture(event.pointerId);
     };
@@ -88,6 +90,7 @@ const AIVolatilityScanner = observer(() => {
     const handlePointerMove = (event: React.PointerEvent<HTMLButtonElement>) => {
         if (!dragRef.current) return;
         dragRef.current.moved = true;
+        wasDraggedRef.current = true;
         setPosition({
             x: Math.max(8, Math.min(window.innerWidth - 76, event.clientX - dragRef.current.offsetX)),
             y: Math.max(56, Math.min(window.innerHeight - 76, event.clientY - dragRef.current.offsetY)),
@@ -101,12 +104,12 @@ const AIVolatilityScanner = observer(() => {
             className='ai-scanner-orb'
             style={{ left: position.x, top: position.y }}
             aria-label='Open AI volatility scanner'
-            onClick={() => { if (!dragRef.current?.moved) setIsOpen(open => !open); }}
+            onClick={() => { if (!wasDraggedRef.current) setIsOpen(open => !open); wasDraggedRef.current = false; }}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
         >
-            <img src='https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-jexxzNwVYImWACTCn5iR0CvoZbUa2T.png' alt='' />
+            <span className='ai-scanner-orb__ring'><img src='https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-jexxzNwVYImWACTCn5iR0CvoZbUa2T.png' alt='' /></span>
         </button>
         {isOpen && <section className='ai-scanner' aria-labelledby='ai-scanner-title'>
         <button className='ai-scanner__close' aria-label='Close AI volatility scanner' onClick={() => setIsOpen(false)}>×</button>
